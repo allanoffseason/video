@@ -24,6 +24,7 @@
     .nav-link:hover{color:var(--text)}
     .header-controls{display:flex;align-items:center;gap:18px}
     .language-switch{display:inline-flex;gap:2px;padding:3px;border:1px solid var(--line);border-radius:10px;background:var(--surface);flex:none}
+    .language-switch[hidden]{display:none}
     .lang-button{border:0;background:transparent;color:var(--muted);padding:7px 9px;min-width:41px;border-radius:7px;font-size:11px;font-weight:750;cursor:pointer;white-space:nowrap;line-height:1.3;transition:background .18s,color .18s}
     .lang-button[aria-pressed="true"]{background:#403151;color:var(--text)}
     .lang-button:hover:not([aria-pressed="true"]){background:var(--surface-2);color:var(--text)}
@@ -92,10 +93,10 @@
 <body>
   <header>
     <div class="wrap navbar">
-      <a class="brand" href="#inicio" aria-label="Back to top" data-i18n-aria="navigation.home">ALLAN <span>VIEIRA.</span></a>
+      <a class="brand" href="#home" aria-label="Back to top" data-i18n-aria="navigation.home">ALLAN <span>VIEIRA.</span></a>
       <div class="header-controls">
-        <a class="nav-link" href="#trabalhos" data-i18n="navigation.work">My work ↓</a>
-        <div class="language-switch" role="group" aria-label="Website language" data-i18n-aria="language.label">
+        <a class="nav-link" href="#work" data-i18n="navigation.work">My work ↓</a>
+        <div class="language-switch" hidden role="group" aria-label="Website language" data-i18n-aria="language.label">
           <button type="button" class="lang-button" data-lang="en" aria-pressed="true" aria-label="Switch to English">EN</button>
           <button type="button" class="lang-button" data-lang="pt-br" aria-pressed="false" aria-label="Switch to Brazilian Portuguese">PT-BR</button>
         </div>
@@ -103,21 +104,21 @@
     </div>
   </header>
 
-  <main class="wrap" id="inicio">
-    <section class="hero" aria-labelledby="titulo-principal">
+  <main class="wrap" id="home">
+    <section class="hero" aria-labelledby="hero-heading">
       <span class="eyebrow" data-i18n="hero.kicker">Video editing portfolio</span>
       <img class="portrait" src="assets/portrait.png" alt="Portrait of Allan Vieira" data-i18n-alt="hero.portrait" width="132" height="132">
-      <h1><span data-i18n="hero.greeting">I’m</span> <em>Allan Vieira.</em></h1>
+      <h1 id="hero-heading"><span data-i18n="hero.greeting">I’m</span> <em>Allan Vieira.</em></h1>
       <p class="intro" data-i18n="hero.description">I’m a video editor who turns footage into engaging content with precise cuts, rhythm and personality. Explore my vertical video edits.</p>
       <div class="actions">
-        <a class="btn btn-primary" href="#trabalhos" data-i18n="hero.view">View portfolio ↓</a>
-        <a class="btn btn-outline" href="#contato" data-i18n="hero.contact">Get in touch</a>
+        <a class="btn btn-primary" href="#work" data-i18n="hero.view">View portfolio ↓</a>
+        <a class="btn btn-outline" href="#contact" data-i18n="hero.contact">Get in touch</a>
       </div>
     </section>
 
-    <section class="work" id="trabalhos" aria-labelledby="trabalhos-titulo">
+    <section class="work" id="work" aria-labelledby="work-heading">
       <div class="section-head">
-        <div><span class="section-kicker" data-i18n="portfolio.kicker">Portfolio</span><h2 id="trabalhos-titulo" data-i18n="portfolio.heading">Selected work</h2></div>
+        <div><span class="section-kicker" data-i18n="portfolio.kicker">Portfolio</span><h2 id="work-heading" data-i18n="portfolio.heading">Selected work</h2></div>
         <span class="count" id="video-count" aria-live="polite"></span>
       </div>
       <div class="carousel" aria-label="Video carousel" data-i18n-aria="portfolio.carousel">
@@ -126,9 +127,9 @@
       <p class="carousel-status" id="carousel-status" aria-live="polite"></p>
     </section>
 
-    <section class="contact" id="contato" aria-labelledby="contato-titulo">
+    <section class="contact" id="contact" aria-labelledby="contact-heading">
       <span class="section-kicker" data-i18n="contact.kicker">Let’s create</span>
-      <h2 id="contato-titulo" data-i18n="contact.heading">Your next video starts here.</h2>
+      <h2 id="contact-heading" data-i18n="contact.heading">Your next video starts here.</h2>
       <p data-i18n="contact.description">Want to turn your content into something memorable? Get in touch to talk about your project.</p>
       <a class="btn btn-primary" id="contact-link" href="mailto:allanoffseason@gmail.com?subject=Video%20editing%20quote" data-i18n="contact.quote">Request a quote ↗</a>
       <div class="contact-links" aria-label="Contact channels" data-i18n-aria="contact.channels">
@@ -142,98 +143,143 @@
   <footer><div class="wrap"><span id="year"></span> © Allan Vieira · <span data-i18n="footer.rights">Video editor. All rights reserved.</span></div></footer>
 
   <script>
-    const translationsCache = new Map();
-    const languageFiles = { en: "language/en.json", "pt-br": "language/pt-br.json" };
-    const languagePreferenceKey = "allan-portfolio-language";
+    const SITE_VERSION = "v1.0.9";
+    const LANGUAGE_FILES = {
+      en: "language/en.json",
+      "pt-br": "language/pt-br.json"
+    };
+    const LANGUAGE_PREFERENCE_KEY = "allan-portfolio-language";
+    const languageSwitch = document.querySelector(".language-switch");
+    const englishDefaults = new Map();
     let currentLanguage = "en";
-    let dictionary = null;
-    let languageChangeSerial = 0;
+    let translationsEnabled = false;
+    let portugueseTranslations = null;
     let refreshVideoLabels = () => {};
 
-    function translate(key, fallback = "") {
+    const ENGLISH_SITE_TITLE = document.title;
+    const descriptionMeta = document.querySelector('meta[name="description"]');
+    const ENGLISH_SITE_DESCRIPTION = descriptionMeta.content;
+
+    document.querySelectorAll("[data-i18n], [data-i18n-aria], [data-i18n-alt]").forEach(element => {
+      englishDefaults.set(element, {
+        text: element.textContent,
+        aria: element.getAttribute("aria-label"),
+        alt: element.getAttribute("alt")
+      });
+    });
+
+    function lookupTranslation(dictionary, key) {
       const value = key.split(".").reduce((node, segment) => node?.[segment], dictionary);
-      return typeof value === "string" ? value : fallback;
+      return typeof value === "string" && value.trim() ? value : null;
+    }
+
+    function translate(key, englishFallback = "") {
+      return currentLanguage === "pt-br" && translationsEnabled
+        ? lookupTranslation(portugueseTranslations, key) ?? englishFallback
+        : englishFallback;
     }
 
     function detectBrowserLanguage() {
-      const primary = navigator.languages?.[0] || navigator.language || "en";
-      return /^pt(?:-|$)/i.test(primary) ? "pt-br" : "en";
+      const language = navigator.languages?.[0] || navigator.language || "en";
+      return /^pt(?:-|$)/i.test(language) ? "pt-br" : "en";
     }
 
     function preferredLanguage() {
       try {
-        const stored = localStorage.getItem(languagePreferenceKey);
-        if (stored && Object.hasOwn(languageFiles, stored)) return stored;
-      } catch (error) {}
-      return detectBrowserLanguage();
-    }
-
-    async function fetchLanguage(lang) {
-      if (!translationsCache.has(lang)) {
-        const request = fetch(new URL(languageFiles[lang], document.baseURI)).then(async response => {
-          if (!response.ok) throw new Error(`Language ${lang}: HTTP ${response.status}`);
-          return response.json();
-        }).catch(error => {
-          translationsCache.delete(lang);
-          throw error;
-        });
-        translationsCache.set(lang, request);
+        const saved = localStorage.getItem(LANGUAGE_PREFERENCE_KEY);
+        if (saved === "en" || saved === "pt-br") return saved;
+      } catch (error) {
+        console.warn("Language preference storage is unavailable:", error);
       }
-      return translationsCache.get(lang);
+      return detectBrowserLanguage();
     }
 
     function updateStaticTranslations() {
       document.documentElement.lang = currentLanguage === "pt-br" ? "pt-BR" : "en";
-      document.title = translate("site.title", "Allan Vieira | Video Editor");
-      document.querySelector('meta[name="description"]').content = translate("site.description", "Allan Vieira’s video editing portfolio.");
-      document.querySelectorAll("[data-i18n]").forEach(element => {
-        element.textContent = translate(element.dataset.i18n, element.textContent);
+      document.title = translate("site.title", ENGLISH_SITE_TITLE);
+      descriptionMeta.content = translate("site.description", ENGLISH_SITE_DESCRIPTION);
+
+      englishDefaults.forEach((defaults, element) => {
+        if (element.dataset.i18n) {
+          element.textContent = translate(element.dataset.i18n, defaults.text);
+        }
+        if (element.dataset.i18nAria) {
+          element.setAttribute("aria-label", translate(element.dataset.i18nAria, defaults.aria || ""));
+        }
+        if (element.dataset.i18nAlt) {
+          element.alt = translate(element.dataset.i18nAlt, defaults.alt || "");
+        }
       });
-      document.querySelectorAll("[data-i18n-aria]").forEach(element => {
-        element.setAttribute("aria-label", translate(element.dataset.i18nAria, element.getAttribute("aria-label")));
-      });
-      document.querySelectorAll("[data-i18n-alt]").forEach(element => {
-        element.alt = translate(element.dataset.i18nAlt, element.alt);
-      });
+
       document.querySelectorAll(".lang-button").forEach(button => {
         const selected = button.dataset.lang === currentLanguage;
         button.setAttribute("aria-pressed", String(selected));
-        button.setAttribute("aria-label", translate(button.dataset.lang === "en" ? "language.english" : "language.portuguese", button.getAttribute("aria-label")));
+        const englishLabel = button.dataset.lang === "en" ? "Switch to English" : "Switch to Brazilian Portuguese";
+        button.setAttribute("aria-label", translate(button.dataset.lang === "en" ? "language.english" : "language.portuguese", englishLabel));
       });
-      document.getElementById("contact-link").href = `mailto:allanoffseason@gmail.com?subject=${encodeURIComponent(translate("contact.subject", "Video editing quote"))}`;
+
+      const quoteSubject = translate("contact.subject", "Video editing quote");
+      document.getElementById("contact-link").href = `mailto:allanoffseason@gmail.com?subject=${encodeURIComponent(quoteSubject)}`;
       refreshVideoLabels();
     }
 
-    async function changeLanguage(lang, remember = false) {
-      if (!Object.hasOwn(languageFiles, lang)) return;
-      const sequence = ++languageChangeSerial;
-      let resultLanguage = lang;
-      let nextDictionary;
-      try {
-        nextDictionary = await fetchLanguage(lang);
-      } catch (error) {
-        console.warn("Language file unavailable:", error);
-        if (lang === "en") return;
-        try {
-          resultLanguage = "en";
-          nextDictionary = await fetchLanguage("en");
-        } catch (fallbackError) {
-          console.warn("English language file unavailable:", fallbackError);
-          return;
-        }
-      }
-      if (sequence !== languageChangeSerial) return;
-      currentLanguage = resultLanguage;
-      dictionary = nextDictionary;
+    function changeLanguage(language, remember = false) {
+      if (!translationsEnabled || (language !== "en" && language !== "pt-br")) return;
+      currentLanguage = language;
       updateStaticTranslations();
-      if (remember && resultLanguage === lang) {
-        try { localStorage.setItem(languagePreferenceKey, lang); } catch (error) {}
+      if (remember) {
+        try { localStorage.setItem(LANGUAGE_PREFERENCE_KEY, language); }
+        catch (error) { console.warn("Could not save language preference:", error); }
       }
     }
 
     document.querySelectorAll(".lang-button").forEach(button => {
       button.addEventListener("click", () => changeLanguage(button.dataset.lang, true));
     });
+
+    const REQUIRED_TRANSLATION_KEYS = [
+      "site.title", "site.description", "navigation.home", "navigation.work",
+      "language.label", "language.english", "language.portuguese",
+      "hero.kicker", "hero.portrait", "hero.greeting", "hero.description", "hero.view", "hero.contact",
+      "portfolio.kicker", "portfolio.heading", "portfolio.carousel", "portfolio.singular",
+      "portfolio.plural", "portfolio.fallback", "portfolio.none", "portfolio.of",
+      "portfolio.swipeStatus", "portfolio.type", "portfolio.youtube", "portfolio.play",
+      "portfolio.thumbnail", "portfolio.frame", "portfolio.helpAria", "portfolio.helpTitle",
+      "portfolio.helpSubtitle", "contact.kicker", "contact.heading", "contact.description",
+      "contact.quote", "contact.channels", "contact.subject", "footer.rights"
+    ];
+
+    function isCurrentTranslationPack(pack) {
+      return Boolean(pack && pack.version === SITE_VERSION && pack.translations &&
+        REQUIRED_TRANSLATION_KEYS.every(key => lookupTranslation(pack.translations, key)));
+    }
+
+    async function initializeTranslations() {
+      try {
+        const entries = await Promise.all(Object.entries(LANGUAGE_FILES).map(async ([language, file]) => {
+          const url = new URL(file, document.baseURI);
+          url.searchParams.set("version", SITE_VERSION);
+          const response = await fetch(url, { cache: "no-store" });
+          if (!response.ok) throw new Error(`${language}: HTTP ${response.status}`);
+          return [language, await response.json()];
+        }));
+        const packs = Object.fromEntries(entries);
+        if (!isCurrentTranslationPack(packs.en) || !isCurrentTranslationPack(packs["pt-br"])) {
+          throw new Error(`Translation pack versions or keys do not match ${SITE_VERSION}`);
+        }
+        portugueseTranslations = packs["pt-br"].translations;
+        translationsEnabled = true;
+        languageSwitch.hidden = false;
+        changeLanguage(preferredLanguage());
+      } catch (error) {
+        console.info("Translation packs unavailable or outdated; using native English.", error);
+        languageSwitch.hidden = true;
+        translationsEnabled = false;
+        portugueseTranslations = null;
+        currentLanguage = "en";
+        document.documentElement.lang = "en";
+      }
+    }
 
     const videos = [
       { url: "https://www.youtube.com/shorts/5Y4iVJMfSKk" },
@@ -242,7 +288,7 @@
       { url: "https://www.youtube.com/shorts/VLvi7NGKW_Y" }
     ];
 
-    function extrairIdYoutube(url) {
+    function extractYouTubeId(url) {
       try {
         const parsed = new URL(url);
         const host = parsed.hostname.replace(/^www\./, "");
@@ -251,91 +297,91 @@
           if (parsed.pathname === "/watch") return parsed.searchParams.get("v");
           if (/^\/(shorts|embed)\//.test(parsed.pathname)) return parsed.pathname.split("/")[2] || null;
         }
-      } catch (erro) { return null; }
+      } catch (error) { return null; }
       return null;
     }
 
-    async function buscarTituloYoutube(id) {
+    async function fetchYouTubeTitle(id) {
       try {
         const videoUrl = `https://www.youtube.com/watch?v=${id}`;
-        const resposta = await fetch(`https://noembed.com/embed?url=${encodeURIComponent(videoUrl)}`);
-        if (!resposta.ok) return null;
-        const dados = await resposta.json();
-        return typeof dados.title === "string" && dados.title.trim() ? dados.title.trim() : null;
-      } catch (erro) {
+        const response = await fetch(`https://noembed.com/embed?url=${encodeURIComponent(videoUrl)}`);
+        if (!response.ok) return null;
+        const data = await response.json();
+        return typeof data.title === "string" && data.title.trim() ? data.title.trim() : null;
+      } catch (error) {
         return null;
       }
     }
 
-    function formatarTitulo(titulo) {
+    function formatVideoTitle(title) {
       const locale = currentLanguage === "pt-br" ? "pt-BR" : "en";
-      const texto = titulo.trim().toLocaleLowerCase(locale);
-      return texto ? texto.charAt(0).toLocaleUpperCase(locale) + texto.slice(1) : texto;
+      const text = title.trim().toLocaleLowerCase(locale);
+      return text ? text.charAt(0).toLocaleUpperCase(locale) + text.slice(1) : text;
     }
 
     const players = new Map();
-    let promessaYoutube;
-    function carregarApiYoutube() {
-      if (promessaYoutube) return promessaYoutube;
-      promessaYoutube = new Promise(resolve => {
+    let youTubeApiPromise;
+    function loadYouTubeApi() {
+      if (youTubeApiPromise) return youTubeApiPromise;
+      youTubeApiPromise = new Promise(resolve => {
         if (window.YT?.Player) return resolve(window.YT);
-        const callbackAnterior = window.onYouTubeIframeAPIReady;
+        const previousCallback = window.onYouTubeIframeAPIReady;
         window.onYouTubeIframeAPIReady = () => {
-          if (typeof callbackAnterior === "function") callbackAnterior();
+          if (typeof previousCallback === "function") previousCallback();
           resolve(window.YT);
         };
         const script = document.createElement("script");
         script.src = "https://www.youtube.com/iframe_api";
         document.head.append(script);
       });
-      return promessaYoutube;
+      return youTubeApiPromise;
     }
 
-    function pausarVideo(card) {
+    function pauseVideo(card) {
       const player = players.get(card);
       if (player && typeof player.pauseVideo === "function") {
-        try { player.pauseVideo(); } catch (erro) {}
+        try { player.pauseVideo(); } catch (error) {}
       }
     }
 
-    function retomarVideo(card) {
+    function resumeVideo(card) {
       const player = players.get(card);
       if (player && typeof player.playVideo === "function") {
-        try { player.playVideo(); } catch (erro) {}
+        try { player.playVideo(); } catch (error) {}
       }
     }
 
     const grid = document.getElementById("video-grid");
     let total = 0;
-    let mostrouDica = false;
-    let dicaAtiva = null;
-    let temporizadorDica = null;
-    function fecharDica() {
-      if (temporizadorDica !== null) {
-        clearTimeout(temporizadorDica);
-        temporizadorDica = null;
+    let hasShownSwipeTip = false;
+    let activeSwipeTip = null;
+    let swipeTipTimer = null;
+    function closeSwipeTip() {
+      if (swipeTipTimer !== null) {
+        clearTimeout(swipeTipTimer);
+        swipeTipTimer = null;
       }
-      if (dicaAtiva) {
-        dicaAtiva.remove();
-        dicaAtiva = null;
+      if (activeSwipeTip) {
+        activeSwipeTip.remove();
+        activeSwipeTip = null;
       }
     }
     const mobileQuery = window.matchMedia("(max-width:639px)");
     const swipeIcon = `<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M19 24V9a3 3 0 0 1 6 0v14-5a3 3 0 0 1 6 0v5-2a3 3 0 0 1 6 0v9c0 8-5 12-12 12-6 0-9-4-12-9l-5-7a3 3 0 0 1 5-3l6 7"/></svg>`;
-    function pausarVideosForaDoAtual() {
-      [...grid.children].forEach((card, indice) => {
-        if (indice !== slideAtual) pausarVideo(card);
+    function pauseInactiveVideos() {
+      [...grid.children].forEach((card, index) => {
+        if (index !== currentSlide) pauseVideo(card);
       });
     }
 
-    videos.forEach((video, indice) => {
-      const id = extrairIdYoutube(video.url);
+    videos.forEach((video, index) => {
+      const id = extractYouTubeId(video.url);
       if (!id || !/^[A-Za-z0-9_-]{11}$/.test(id)) return;
-      const numero = String(indice + 1).padStart(2, "0");
+      const videoNumber = String(index + 1).padStart(2, "0");
       const card = document.createElement("article");
       card.className = "video-card";
-      card.dataset.videoNumber = numero;
-      card.dataset.videoTitle = video.titulo || "";
+      card.dataset.videoNumber = videoNumber;
+      card.dataset.videoTitle = video.title || "";
       const frame = document.createElement("div");
       frame.className = "video-frame";
       const url = `https://www.youtube.com/shorts/${id}`;
@@ -344,21 +390,21 @@
       poster.className = "video-poster";
       poster.setAttribute("aria-label", "Play video");
       const thumb = document.createElement("img");
-      const resolucoes = ["maxresdefault", "sddefault", "hqdefault"];
-      let indiceResolucao = 0;
-      const tentarProximaMiniatura = () => {
-        indiceResolucao++;
-        if (indiceResolucao < resolucoes.length) {
-          thumb.src = `https://i.ytimg.com/vi/${id}/${resolucoes[indiceResolucao]}.jpg`;
+      const resolutions = ["maxresdefault", "sddefault", "hqdefault"];
+      let resolutionIndex = 0;
+      const tryNextThumbnail = () => {
+        resolutionIndex++;
+        if (resolutionIndex < resolutions.length) {
+          thumb.src = `https://i.ytimg.com/vi/${id}/${resolutions[resolutionIndex]}.jpg`;
         }
       };
-      thumb.addEventListener("error", tentarProximaMiniatura);
+      thumb.addEventListener("error", tryNextThumbnail);
       thumb.addEventListener("load", () => {
-        const resolucao = resolucoes[indiceResolucao];
-        const larguraMinima = resolucao === "maxresdefault" ? 1000 : resolucao === "sddefault" ? 600 : 1;
-        if (thumb.naturalWidth < larguraMinima) tentarProximaMiniatura();
+        const resolution = resolutions[resolutionIndex];
+        const minimumWidth = resolution === "maxresdefault" ? 1000 : resolution === "sddefault" ? 600 : 1;
+        if (thumb.naturalWidth < minimumWidth) tryNextThumbnail();
       });
-      thumb.src = `https://i.ytimg.com/vi/${id}/${resolucoes[0]}.jpg`;
+      thumb.src = `https://i.ytimg.com/vi/${id}/${resolutions[0]}.jpg`;
       thumb.alt = "Video thumbnail";
       thumb.loading = "lazy";
       const play = document.createElement("span");
@@ -367,69 +413,69 @@
       play.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.7c0-.8.9-1.3 1.6-.9l12 7.3a1 1 0 0 1 0 1.7l-12 7.3c-.7.4-1.6-.1-1.6-.9V4.7Z"/></svg>';
       poster.append(thumb, play);
       poster.addEventListener("click", () => {
-        [...grid.children].forEach(outro => { if (outro !== card) pausarVideo(outro); });
+        [...grid.children].forEach(otherCard => { if (otherCard !== card) pauseVideo(otherCard); });
         const iframe = document.createElement("iframe");
-        const origem = location.protocol === "https:" || location.protocol === "http:" ? `&origin=${encodeURIComponent(location.origin)}` : "";
-        iframe.src = `https://www.youtube.com/embed/${id}?playsinline=1&rel=0&autoplay=1&enablejsapi=1${origem}`;
-        iframe.title = `${translate("portfolio.frame", "Video:")} ${nome.textContent}`;
+        const origin = location.protocol === "https:" || location.protocol === "http:" ? `&origin=${encodeURIComponent(location.origin)}` : "";
+        iframe.src = `https://www.youtube.com/embed/${id}?playsinline=1&rel=0&autoplay=1&enablejsapi=1${origin}`;
+        iframe.title = `${translate("portfolio.frame", "Video:")} ${name.textContent}`;
         iframe.referrerPolicy = "strict-origin-when-cross-origin";
         iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
         iframe.allowFullscreen = true;
         poster.hidden = true;
         frame.append(iframe);
         frame.classList.add("is-playing");
-        carregarApiYoutube().then(YT => {
+        loadYouTubeApi().then(YT => {
           if (!iframe.isConnected) return;
           const player = new YT.Player(iframe, {
             events: {
               onReady: () => {
-                if (mobileQuery.matches && [...grid.children].indexOf(card) !== slideAtual) pausarVideo(card);
+                if (mobileQuery.matches && [...grid.children].indexOf(card) !== currentSlide) pauseVideo(card);
               }
             }
           });
           players.set(card, player);
         });
         if (mobileQuery.matches) {
-          ["left", "right"].forEach(lado => {
-            const zona = document.createElement("div");
-            zona.className = `swipe-edge ${lado}`;
-            zona.setAttribute("aria-hidden", "true");
-            let inicioX = null;
-            zona.addEventListener("touchstart", ev => { inicioX = ev.touches[0].clientX; }, { passive: true });
-            zona.addEventListener("touchend", ev => {
-              if (inicioX === null) return;
-              const distancia = ev.changedTouches[0].clientX - inicioX;
-              if (Math.abs(distancia) > 35) irParaVideo(slideAtual + (distancia < 0 ? 1 : -1));
-              inicioX = null;
+          ["left", "right"].forEach(side => {
+            const edge = document.createElement("div");
+            edge.className = `swipe-edge ${side}`;
+            edge.setAttribute("aria-hidden", "true");
+            let startX = null;
+            edge.addEventListener("touchstart", ev => { startX = ev.touches[0].clientX; }, { passive: true });
+            edge.addEventListener("touchend", ev => {
+              if (startX === null) return;
+              const distance = ev.changedTouches[0].clientX - startX;
+              if (Math.abs(distance) > 35) goToVideo(currentSlide + (distance < 0 ? 1 : -1));
+              startX = null;
             }, { passive: true });
-            frame.append(zona);
+            frame.append(edge);
           });
-          if (!mostrouDica) {
-            mostrouDica = true;
-            const dica = document.createElement("button");
-            dica.type = "button";
-            dica.className = "swipe-help";
-            dica.setAttribute("aria-label", translate("portfolio.helpAria", "Close swipe tip"));
-            dica.innerHTML = `<span class="swipe-finger">${swipeIcon}</span><strong></strong><small></small>`;
-            dica.querySelector("strong").textContent = translate("portfolio.helpTitle", "Swipe left or right");
-            dica.querySelector("small").textContent = translate("portfolio.helpSubtitle", "Tap to continue");
-            dica.addEventListener("click", fecharDica);
-            let toqueInicialX = null;
-            dica.addEventListener("touchstart", ev => {
-              toqueInicialX = ev.touches[0].clientX;
+          if (!hasShownSwipeTip) {
+            hasShownSwipeTip = true;
+            const tip = document.createElement("button");
+            tip.type = "button";
+            tip.className = "swipe-help";
+            tip.setAttribute("aria-label", translate("portfolio.helpAria", "Close swipe tip"));
+            tip.innerHTML = `<span class="swipe-finger">${swipeIcon}</span><strong></strong><small></small>`;
+            tip.querySelector("strong").textContent = translate("portfolio.helpTitle", "Swipe left or right");
+            tip.querySelector("small").textContent = translate("portfolio.helpSubtitle", "Tap to continue");
+            tip.addEventListener("click", closeSwipeTip);
+            let touchStartX = null;
+            tip.addEventListener("touchstart", ev => {
+              touchStartX = ev.touches[0].clientX;
             }, { passive: true });
-            dica.addEventListener("touchend", ev => {
-              if (toqueInicialX === null) return;
-              const deslocamento = ev.changedTouches[0].clientX - toqueInicialX;
-              toqueInicialX = null;
-              if (Math.abs(deslocamento) > 35) {
-                fecharDica();
-                irParaVideo(slideAtual + (deslocamento < 0 ? 1 : -1));
+            tip.addEventListener("touchend", ev => {
+              if (touchStartX === null) return;
+              const deltaX = ev.changedTouches[0].clientX - touchStartX;
+              touchStartX = null;
+              if (Math.abs(deltaX) > 35) {
+                closeSwipeTip();
+                goToVideo(currentSlide + (deltaX < 0 ? 1 : -1));
               }
             }, { passive: true });
-            dicaAtiva = dica;
-            frame.append(dica);
-            temporizadorDica = setTimeout(fecharDica, 3500);
+            activeSwipeTip = tip;
+            frame.append(tip);
+            swipeTipTimer = setTimeout(closeSwipeTip, 3500);
           }
         }
       });
@@ -437,20 +483,20 @@
 
       const info = document.createElement("div");
       info.className = "video-info";
-      const nome = document.createElement("strong");
-      nome.textContent = "";
-      const tipo = document.createElement("span");
-      tipo.textContent = "";
+      const name = document.createElement("strong");
+      name.textContent = "";
+      const type = document.createElement("span");
+      type.textContent = "";
       const link = document.createElement("a");
       link.className = "external-video";
       link.href = url;
       link.target = "_blank";
       link.rel = "noopener noreferrer";
       link.textContent = "";
-      info.append(nome, tipo, link);
-      buscarTituloYoutube(id).then(tituloReal => {
-        if (!tituloReal) return;
-        card.dataset.videoTitle = tituloReal;
+      info.append(name, type, link);
+      fetchYouTubeTitle(id).then(realTitle => {
+        if (!realTitle) return;
+        card.dataset.videoTitle = realTitle;
         renderVideoCard(card);
       });
       card.append(frame, info);
@@ -462,7 +508,7 @@
     function renderVideoCard(card) {
       const name = card.querySelector(".video-info strong");
       const rawTitle = card.dataset.videoTitle;
-      const title = rawTitle ? formatarTitulo(rawTitle) : `${translate("portfolio.fallback", "Video")} ${card.dataset.videoNumber}`;
+      const title = rawTitle ? formatVideoTitle(rawTitle) : `${translate("portfolio.fallback", "Video")} ${card.dataset.videoNumber}`;
       name.textContent = title;
       card.querySelector(".video-info span").textContent = translate("portfolio.type", "Video editing · Vertical");
       card.querySelector(".external-video").textContent = translate("portfolio.youtube", "Watch on YouTube ↗");
@@ -478,60 +524,60 @@
     }
     updateVideoCount();
     const status = document.getElementById("carousel-status");
-    let slideAtual = 0;
-    function atualizarCarrossel() {
+    let currentSlide = 0;
+    function updateCarouselStatus() {
       const cards = [...grid.children];
       if (!cards.length) {
         status.textContent = translate("portfolio.none", "No videos available");
         return;
       }
-      slideAtual = Math.max(0, Math.min(slideAtual, cards.length - 1));
-      status.textContent = `${slideAtual + 1} ${translate("portfolio.of", "of")} ${cards.length} · ${translate("portfolio.swipeStatus", "Swipe to browse")}`;
+      currentSlide = Math.max(0, Math.min(currentSlide, cards.length - 1));
+      status.textContent = `${currentSlide + 1} ${translate("portfolio.of", "of")} ${cards.length} · ${translate("portfolio.swipeStatus", "Swipe to browse")}`;
     }
-    function irParaVideo(indice) {
+    function goToVideo(index) {
       const cards = [...grid.children];
       if (!cards.length) return;
-      const proximo = Math.max(0, Math.min(indice, cards.length - 1));
-      if (slideAtual !== proximo) {
-        fecharDica();
-        slideAtual = proximo;
-        ultimoIndice = proximo;
-        pausarVideosForaDoAtual();
-        retomarVideo(cards[slideAtual]);
+      const nextIndex = Math.max(0, Math.min(index, cards.length - 1));
+      if (currentSlide !== nextIndex) {
+        closeSwipeTip();
+        currentSlide = nextIndex;
+        lastSlide = nextIndex;
+        pauseInactiveVideos();
+        resumeVideo(cards[currentSlide]);
       }
-      grid.scrollTo({ left: cards[slideAtual].offsetLeft - cards[0].offsetLeft, behavior: "smooth" });
-      atualizarCarrossel();
+      grid.scrollTo({ left: cards[currentSlide].offsetLeft - cards[0].offsetLeft, behavior: "smooth" });
+      updateCarouselStatus();
     }
-    let ultimoIndice = 0;
+    let lastSlide = 0;
     grid.addEventListener("scroll", () => {
       if (!mobileQuery.matches) return;
       const cards = [...grid.children];
       if (!cards.length) return;
-      const indice = cards.reduce((best, card, i) =>
+      const index = cards.reduce((best, card, i) =>
         Math.abs(card.offsetLeft - cards[0].offsetLeft - grid.scrollLeft) < Math.abs(cards[best].offsetLeft - cards[0].offsetLeft - grid.scrollLeft) ? i : best, 0);
-      if (indice !== ultimoIndice) {
-        fecharDica();
-        ultimoIndice = indice;
-        slideAtual = indice;
-        pausarVideosForaDoAtual();
-        retomarVideo(cards[slideAtual]);
-        atualizarCarrossel();
+      if (index !== lastSlide) {
+        closeSwipeTip();
+        lastSlide = index;
+        currentSlide = index;
+        pauseInactiveVideos();
+        resumeVideo(cards[currentSlide]);
+        updateCarouselStatus();
       }
     }, { passive: true });
     refreshVideoLabels = () => {
       [...grid.children].forEach(renderVideoCard);
       updateVideoCount();
-      atualizarCarrossel();
-      if (dicaAtiva) {
-        dicaAtiva.setAttribute("aria-label", translate("portfolio.helpAria", "Close swipe tip"));
-        dicaAtiva.querySelector("strong").textContent = translate("portfolio.helpTitle", "Swipe left or right");
-        dicaAtiva.querySelector("small").textContent = translate("portfolio.helpSubtitle", "Tap to continue");
+      updateCarouselStatus();
+      if (activeSwipeTip) {
+        activeSwipeTip.setAttribute("aria-label", translate("portfolio.helpAria", "Close swipe tip"));
+        activeSwipeTip.querySelector("strong").textContent = translate("portfolio.helpTitle", "Swipe left or right");
+        activeSwipeTip.querySelector("small").textContent = translate("portfolio.helpSubtitle", "Tap to continue");
       }
     };
-    atualizarCarrossel();
+    updateCarouselStatus();
     document.getElementById("year").textContent = new Date().getFullYear();
-    changeLanguage(preferredLanguage());
+    initializeTranslations();
   </script>
-  <!-- Commit: v1.0.8;Adicionada detecção automática de idioma, seletor EN/PT-BR e traduções completas em arquivos JSON externos. -->
+  <!-- Commit: v1.0.9;Established English-only source code and version-locked EN/PT-BR translation packs with automatic fallback to native English. -->
 </body>
 </html>
