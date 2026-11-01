@@ -46,13 +46,20 @@
     .video-grid{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;overscroll-behavior-x:contain;width:100%;min-width:0}
     .video-grid::-webkit-scrollbar{display:none}
     .video-card{flex:0 0 100%;scroll-snap-align:center}
-    .carousel-arrow{position:absolute;top:44%;z-index:2;width:44px;height:64px;display:grid;place-items:center;border:0;border-radius:13px;background:#15151cbb;color:var(--accent-2);font-size:18px;line-height:1;cursor:pointer;transform:translateY(-50%);touch-action:manipulation}.carousel-arrow:first-child{left:-11px}.carousel-arrow:last-child{right:-11px}
-    .carousel-arrow:disabled{opacity:0;pointer-events:none}
     .carousel-status{text-align:center;font-size:12px;color:var(--muted);margin:12px 0 0}
+    .swipe-help{position:absolute;inset:0;z-index:6;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;border:0;background:#080710cf;color:#fff;cursor:pointer;text-align:center;backdrop-filter:blur(3px)}
+    .swipe-help strong{font-size:14px;font-weight:650}.swipe-help small{font-size:11px;color:#d7d0e6}
+    .swipe-finger{width:48px;height:48px;display:grid;place-items:center;animation:swipe-teach 1.55s ease-in-out infinite}
+    .swipe-finger svg{width:44px;height:44px;fill:none;stroke:#eee7ff;stroke-linecap:round;stroke-linejoin:round;stroke-width:1.8}
+    @keyframes swipe-teach{0%,100%{transform:translateX(34px);opacity:.55}50%{transform:translateX(-34px);opacity:1}}
+    .swipe-edge{display:none}
+    .contact-links svg{width:18px;height:18px;flex:none;fill:currentColor}
+    .contact-links a{gap:9px}
     .video-card{min-width:0;border:1px solid var(--line);background:var(--surface);border-radius:var(--radius);overflow:hidden}
     .video-frame{aspect-ratio:9/16;background:#09090c;position:relative}
     .video-frame iframe{display:block;width:100%;height:100%;border:0}
     .video-poster{width:100%;height:100%;border:0;padding:0;display:flex;align-items:center;justify-content:center;position:relative;cursor:pointer;background:#17131f;color:#fff;overflow:hidden}
+    .video-poster[hidden]{display:none}
     .video-poster img{width:100%;height:100%;object-fit:cover;display:block;opacity:.85}
     .play-icon{position:absolute;display:grid;place-items:center;width:52px;height:52px;border-radius:50%;background:#a78bfa;color:#160e24;font-size:22px;box-shadow:0 6px 24px #0009;transition:transform .2s}
     .video-poster:hover .play-icon{transform:scale(1.08)}
@@ -64,10 +71,11 @@
     .contact h2{font-size:26px}.contact-links{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}.contact-links a{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:0 17px;border-radius:12px;border:1px solid #514564;background:#231b31;font-size:13px;font-weight:750}.contact-links a:hover{border-color:var(--accent);background:#332646}
     .contact p{color:var(--muted);font-size:14px;line-height:1.65;margin:12px 0 21px;max-width:480px}
     footer{padding:20px 0 30px;color:var(--muted);border-top:1px solid var(--line);font-size:11px;text-align:center}
-    @media (max-width:340px){.wrap{width:min(100% - 24px,1100px)}.navbar{min-height:62px}.brand{font-size:12px}.carousel-arrow:first-child{left:-8px}.carousel-arrow:last-child{right:-8px}.video-grid{gap:9px}.video-info{padding:10px 8px}.hero{padding-top:40px}}
-    @media (min-width:640px){.portrait{width:152px;height:152px}.hero{padding:90px 0 65px}.intro{font-size:17px}.carousel{display:block;max-width:none}.carousel-arrow,.carousel-status{display:none}.video-grid{display:grid;width:100%;overflow:visible;scroll-snap-type:none;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}.video-card{flex:none}.video-info{padding:15px}.video-info strong{font-size:14px}.video-info span{font-size:12px}.section-head{margin-bottom:24px}h2{font-size:30px}.contact{padding:40px}}
+    @media (max-width:340px){.wrap{width:min(100% - 24px,1100px)}.navbar{min-height:62px}.brand{font-size:12px}.video-grid{gap:9px}.video-info{padding:10px 8px}.hero{padding-top:40px}}
+    @media (max-width:639px){.video-frame.is-playing .swipe-edge{display:block;position:absolute;top:0;bottom:0;width:27px;z-index:3;touch-action:pan-y;cursor:grab}.swipe-edge.left{left:0}.swipe-edge.right{right:0}}
+    @media (min-width:640px){.portrait{width:152px;height:152px}.hero{padding:90px 0 65px}.intro{font-size:17px}.carousel{display:block;max-width:none}.carousel-status{display:none}.video-grid{display:grid;width:100%;overflow:visible;scroll-snap-type:none;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}.video-card{flex:none}.video-info{padding:15px}.video-info strong{font-size:14px}.video-info span{font-size:12px}.section-head{margin-bottom:24px}h2{font-size:30px}.contact{padding:40px}}
     @media (min-width:960px){.video-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}.hero{padding:105px 0 75px}.work{padding-top:20px}.contact{margin-top:85px}}
-    @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.btn{transition:none}}
+    @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.btn{transition:none}.swipe-finger{animation:none}}
   </style>
 </head>
 <body>
@@ -96,9 +104,7 @@
         <span class="count" id="video-count" aria-live="polite"></span>
       </div>
       <div class="carousel" aria-label="Carrossel de vídeos">
-        <button class="carousel-arrow" id="prev-video" type="button" aria-label="Vídeo anterior">‹</button>
         <div class="video-grid" id="video-grid"></div>
-        <button class="carousel-arrow" id="next-video" type="button" aria-label="Próximo vídeo">›</button>
       </div>
       <p class="carousel-status" id="carousel-status" aria-live="polite"></p>
     </section>
@@ -109,9 +115,9 @@
       <p>Quer transformar seu conteúdo em algo marcante? Entre em contato para conversar sobre seu projeto.</p>
       <a class="btn btn-primary" id="contact-link" href="mailto:allanoffseason@gmail.com?subject=Or%C3%A7amento%20de%20edi%C3%A7%C3%A3o%20de%20v%C3%ADdeo">Solicitar orçamento ↗</a>
       <div class="contact-links" aria-label="Canais de contato">
-        <a href="https://x.com/allanoffseason" target="_blank" rel="noopener noreferrer">X / Twitter ↗</a>
-        <a href="https://discord.com/users/1509962754621051033" target="_blank" rel="noopener noreferrer">Discord ↗</a>
-        <a href="https://mail.google.com/mail/u/0/?fs=1&amp;to=allanoffseason@gmail.com&amp;tf=cm" target="_blank" rel="noopener noreferrer">Gmail ↗</a>
+        <a href="https://x.com/allanoffseason" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.901 2H22l-6.767 7.736L23.193 22h-6.231l-4.88-7.427L5.586 22H2.484l7.238-8.27L1.807 2h6.389l4.412 6.738L18.901 2Zm-1.093 18h1.717L7.259 3.895H5.416L17.808 20Z"/></svg>X / Twitter ↗</a>
+        <a href="https://discord.com/users/1509962754621051033" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.317 4.369a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.078.037c-.211.375-.445.864-.608 1.249a18.27 18.27 0 0 0-5.492 0 12.64 12.64 0 0 0-.617-1.249.077.077 0 0 0-.078-.037 19.74 19.74 0 0 0-4.885 1.515.07.07 0 0 0-.032.027C.533 9.046-.32 13.581.099 18.057a.082.082 0 0 0 .031.056 19.9 19.9 0 0 0 5.993 3.03.076.076 0 0 0 .083-.028 14.2 14.2 0 0 0 1.226-1.993.075.075 0 0 0-.041-.104 13.1 13.1 0 0 1-1.872-.894.076.076 0 0 1-.008-.126l.372-.288a.074.074 0 0 1 .077-.01c3.927 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.009l.373.289a.075.075 0 0 1-.007.126 12.3 12.3 0 0 1-1.873.893.075.075 0 0 0-.04.105 16 16 0 0 0 1.226 1.992.075.075 0 0 0 .083.029 19.84 19.84 0 0 0 6.002-3.03.077.077 0 0 0 .032-.056c.5-5.177-.838-9.675-3.549-13.66a.06.06 0 0 0-.031-.028ZM8.02 15.331c-1.183 0-2.156-1.086-2.156-2.42 0-1.333.955-2.42 2.156-2.42 1.21 0 2.175 1.096 2.156 2.42 0 1.334-.955 2.42-2.156 2.42Zm7.96 0c-1.183 0-2.156-1.086-2.156-2.42 0-1.333.955-2.42 2.156-2.42 1.21 0 2.175 1.096 2.156 2.42 0 1.334-.955 2.42-2.156 2.42Z"/></svg>Discord ↗</a>
+        <a href="https://mail.google.com/mail/u/0/?fs=1&amp;to=allanoffseason@gmail.com&amp;tf=cm" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 6.9c0-.96.75-1.65 1.67-1.65.35 0 .68.11.98.34L12 11.2l7.35-5.61c.3-.23.63-.34.98-.34.92 0 1.67.69 1.67 1.65v10.2c0 .92-.75 1.65-1.67 1.65h-2.07V9.76L12 14.5 5.74 9.76v8.99H3.67C2.75 18.75 2 18.02 2 17.1V6.9Z"/></svg>Gmail ↗</a>
       </div>
     </section>
   </main>
@@ -153,6 +159,25 @@
 
     const grid = document.getElementById("video-grid");
     let total = 0;
+    let mostrouDica = false;
+    const mobileQuery = window.matchMedia("(max-width:639px)");
+    const swipeIcon = `<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M19 24V9a3 3 0 0 1 6 0v14-5a3 3 0 0 1 6 0v5-2a3 3 0 0 1 6 0v9c0 8-5 12-12 12-6 0-9-4-12-9l-5-7a3 3 0 0 1 5-3l6 7"/></svg>`;
+    function pararVideo(card) {
+      const frame = card.querySelector(".video-frame");
+      const iframe = frame?.querySelector("iframe");
+      if (!iframe) return;
+      iframe.remove();
+      frame.classList.remove("is-playing");
+      frame.querySelector(".swipe-help")?.remove();
+      frame.querySelectorAll(".swipe-edge").forEach(zona => zona.remove());
+      const poster = frame.querySelector(".video-poster");
+      if (poster) poster.hidden = false;
+    }
+    function pararVideosForaDoAtual() {
+      [...grid.children].forEach((card, indice) => {
+        if (indice !== slideAtual) pararVideo(card);
+      });
+    }
 
     videos.forEach((video, indice) => {
       const id = extrairIdYoutube(video.url);
@@ -177,13 +202,42 @@
       play.textContent = "▶";
       poster.append(thumb, play);
       poster.addEventListener("click", () => {
+        [...grid.children].forEach(outro => { if (outro !== card) pararVideo(outro); });
         const iframe = document.createElement("iframe");
-        iframe.src = `https://www.youtube.com/embed/${id}?playsinline=1&rel=0&autoplay=1`;
-        iframe.title = `Vídeo: ${titulo}`;
+        iframe.src = `https://www.youtube.com/embed/${id}?playsinline=1&rel=0&autoplay=1&enablejsapi=1`;
+        iframe.title = `Vídeo: ${nome.textContent}`;
         iframe.referrerPolicy = "strict-origin-when-cross-origin";
         iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
         iframe.allowFullscreen = true;
-        frame.replaceChildren(iframe);
+        poster.hidden = true;
+        frame.append(iframe);
+        frame.classList.add("is-playing");
+        if (mobileQuery.matches) {
+          ["left", "right"].forEach(lado => {
+            const zona = document.createElement("div");
+            zona.className = `swipe-edge ${lado}`;
+            zona.setAttribute("aria-hidden", "true");
+            let inicioX = null;
+            zona.addEventListener("touchstart", ev => { inicioX = ev.touches[0].clientX; }, { passive: true });
+            zona.addEventListener("touchend", ev => {
+              if (inicioX === null) return;
+              const distancia = ev.changedTouches[0].clientX - inicioX;
+              if (Math.abs(distancia) > 35) irParaVideo(slideAtual + (distancia < 0 ? 1 : -1));
+              inicioX = null;
+            }, { passive: true });
+            frame.append(zona);
+          });
+          if (!mostrouDica) {
+            mostrouDica = true;
+            const dica = document.createElement("button");
+            dica.type = "button";
+            dica.className = "swipe-help";
+            dica.setAttribute("aria-label", "Entendi, fechar dica de navegação");
+            dica.innerHTML = `<span class="swipe-finger">${swipeIcon}</span><strong>Deslize para o lado</strong><small>Toque para continuar</small>`;
+            dica.addEventListener("click", () => dica.remove(), { once: true });
+            frame.append(dica);
+          }
+        }
       });
       frame.append(poster);
 
@@ -214,44 +268,42 @@
     });
 
     document.getElementById("video-count").textContent = `${total} ${total === 1 ? "vídeo" : "vídeos"}`;
-    const previous = document.getElementById("prev-video");
-    const next = document.getElementById("next-video");
     const status = document.getElementById("carousel-status");
     let slideAtual = 0;
-
     function atualizarCarrossel() {
       const cards = [...grid.children];
       if (!cards.length) {
-        previous.disabled = next.disabled = true;
         status.textContent = "Nenhum vídeo disponível";
         return;
       }
       slideAtual = Math.max(0, Math.min(slideAtual, cards.length - 1));
-      previous.disabled = slideAtual === 0;
-      next.disabled = slideAtual === cards.length - 1;
       status.textContent = `${slideAtual + 1} de ${cards.length} · Deslize para navegar`;
     }
-
     function irParaVideo(indice) {
       const cards = [...grid.children];
       if (!cards.length) return;
-      slideAtual = Math.max(0, Math.min(indice, cards.length - 1));
+      const proximo = Math.max(0, Math.min(indice, cards.length - 1));
+      if (slideAtual !== proximo) {
+        slideAtual = proximo;
+        ultimoIndice = proximo;
+        pararVideosForaDoAtual();
+      }
       grid.scrollTo({ left: cards[slideAtual].offsetLeft - cards[0].offsetLeft, behavior: "smooth" });
       atualizarCarrossel();
     }
-
-    previous.addEventListener("click", () => irParaVideo(slideAtual - 1));
-    next.addEventListener("click", () => irParaVideo(slideAtual + 1));
-    let scrollTimer;
+    let ultimoIndice = 0;
     grid.addEventListener("scroll", () => {
-      clearTimeout(scrollTimer);
-      scrollTimer = setTimeout(() => {
-        const cards = [...grid.children];
-        if (!cards.length) return;
-        slideAtual = cards.reduce((best, card, i) =>
-          Math.abs(card.offsetLeft - cards[0].offsetLeft - grid.scrollLeft) < Math.abs(cards[best].offsetLeft - cards[0].offsetLeft - grid.scrollLeft) ? i : best, 0);
+      if (!mobileQuery.matches) return;
+      const cards = [...grid.children];
+      if (!cards.length) return;
+      const indice = cards.reduce((best, card, i) =>
+        Math.abs(card.offsetLeft - cards[0].offsetLeft - grid.scrollLeft) < Math.abs(cards[best].offsetLeft - cards[0].offsetLeft - grid.scrollLeft) ? i : best, 0);
+      if (indice !== ultimoIndice) {
+        ultimoIndice = indice;
+        slideAtual = indice;
+        pararVideosForaDoAtual();
         atualizarCarrossel();
-      }, 80);
+      }
     }, { passive: true });
     atualizarCarrossel();
     document.getElementById("year").textContent = new Date().getFullYear();
