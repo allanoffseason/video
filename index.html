@@ -157,32 +157,58 @@
       }
     }
 
+    function formatarTitulo(titulo) {
+      const texto = titulo.trim().toLocaleLowerCase("pt-BR");
+      return texto ? texto.charAt(0).toLocaleUpperCase("pt-BR") + texto.slice(1) : texto;
+    }
+
+    const players = new Map();
+    let promessaYoutube;
+    function carregarApiYoutube() {
+      if (promessaYoutube) return promessaYoutube;
+      promessaYoutube = new Promise(resolve => {
+        if (window.YT?.Player) return resolve(window.YT);
+        const callbackAnterior = window.onYouTubeIframeAPIReady;
+        window.onYouTubeIframeAPIReady = () => {
+          if (typeof callbackAnterior === "function") callbackAnterior();
+          resolve(window.YT);
+        };
+        const script = document.createElement("script");
+        script.src = "https://www.youtube.com/iframe_api";
+        document.head.append(script);
+      });
+      return promessaYoutube;
+    }
+
+    function pausarVideo(card) {
+      const player = players.get(card);
+      if (player && typeof player.pauseVideo === "function") {
+        try { player.pauseVideo(); } catch (erro) {}
+      }
+    }
+
+    function retomarVideo(card) {
+      const player = players.get(card);
+      if (player && typeof player.playVideo === "function") {
+        try { player.playVideo(); } catch (erro) {}
+      }
+    }
+
     const grid = document.getElementById("video-grid");
     let total = 0;
     let mostrouDica = false;
     const mobileQuery = window.matchMedia("(max-width:639px)");
     const swipeIcon = `<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M19 24V9a3 3 0 0 1 6 0v14-5a3 3 0 0 1 6 0v5-2a3 3 0 0 1 6 0v9c0 8-5 12-12 12-6 0-9-4-12-9l-5-7a3 3 0 0 1 5-3l6 7"/></svg>`;
-    function pararVideo(card) {
-      const frame = card.querySelector(".video-frame");
-      const iframe = frame?.querySelector("iframe");
-      if (!iframe) return;
-      iframe.remove();
-      frame.classList.remove("is-playing");
-      frame.querySelector(".swipe-help")?.remove();
-      frame.querySelectorAll(".swipe-edge").forEach(zona => zona.remove());
-      const poster = frame.querySelector(".video-poster");
-      if (poster) poster.hidden = false;
-    }
-    function pararVideosForaDoAtual() {
+    function pausarVideosForaDoAtual() {
       [...grid.children].forEach((card, indice) => {
-        if (indice !== slideAtual) pararVideo(card);
+        if (indice !== slideAtual) pausarVideo(card);
       });
     }
 
     videos.forEach((video, indice) => {
       const id = extrairIdYoutube(video.url);
       if (!id || !/^[A-Za-z0-9_-]{11}$/.test(id)) return;
-      const titulo = video.titulo || `Vídeo ${String(indice + 1).padStart(2, "0")}`;
+      const titulo = formatarTitulo(video.titulo || `Vídeo ${String(indice + 1).padStart(2, "0")}`);
       const card = document.createElement("article");
       card.className = "video-card";
       const frame = document.createElement("div");
@@ -202,9 +228,10 @@
       play.textContent = "▶";
       poster.append(thumb, play);
       poster.addEventListener("click", () => {
-        [...grid.children].forEach(outro => { if (outro !== card) pararVideo(outro); });
+        [...grid.children].forEach(outro => { if (outro !== card) pausarVideo(outro); });
         const iframe = document.createElement("iframe");
-        iframe.src = `https://www.youtube.com/embed/${id}?playsinline=1&rel=0&autoplay=1&enablejsapi=1`;
+        const origem = location.protocol === "https:" || location.protocol === "http:" ? `&origin=${encodeURIComponent(location.origin)}` : "";
+        iframe.src = `https://www.youtube.com/embed/${id}?playsinline=1&rel=0&autoplay=1&enablejsapi=1${origem}`;
         iframe.title = `Vídeo: ${nome.textContent}`;
         iframe.referrerPolicy = "strict-origin-when-cross-origin";
         iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
@@ -212,6 +239,17 @@
         poster.hidden = true;
         frame.append(iframe);
         frame.classList.add("is-playing");
+        carregarApiYoutube().then(YT => {
+          if (!iframe.isConnected) return;
+          const player = new YT.Player(iframe, {
+            events: {
+              onReady: () => {
+                if (mobileQuery.matches && [...grid.children].indexOf(card) !== slideAtual) pausarVideo(card);
+              }
+            }
+          });
+          players.set(card, player);
+        });
         if (mobileQuery.matches) {
           ["left", "right"].forEach(lado => {
             const zona = document.createElement("div");
@@ -256,11 +294,12 @@
       info.append(nome, tipo, link);
       buscarTituloYoutube(id).then(tituloReal => {
         if (!tituloReal) return;
-        nome.textContent = tituloReal;
-        poster.setAttribute("aria-label", `Reproduzir ${tituloReal}`);
-        thumb.alt = `Miniatura do vídeo ${tituloReal}`;
+        const tituloFormatado = formatarTitulo(tituloReal);
+        nome.textContent = tituloFormatado;
+        poster.setAttribute("aria-label", `Reproduzir ${tituloFormatado}`);
+        thumb.alt = `Miniatura do vídeo ${tituloFormatado}`;
         const iframe = frame.querySelector("iframe");
-        if (iframe) iframe.title = `Vídeo: ${tituloReal}`;
+        if (iframe) iframe.title = `Vídeo: ${tituloFormatado}`;
       });
       card.append(frame, info);
       grid.append(card);
@@ -286,7 +325,8 @@
       if (slideAtual !== proximo) {
         slideAtual = proximo;
         ultimoIndice = proximo;
-        pararVideosForaDoAtual();
+        pausarVideosForaDoAtual();
+        retomarVideo(cards[slideAtual]);
       }
       grid.scrollTo({ left: cards[slideAtual].offsetLeft - cards[0].offsetLeft, behavior: "smooth" });
       atualizarCarrossel();
@@ -301,7 +341,8 @@
       if (indice !== ultimoIndice) {
         ultimoIndice = indice;
         slideAtual = indice;
-        pararVideosForaDoAtual();
+        pausarVideosForaDoAtual();
+        retomarVideo(cards[slideAtual]);
         atualizarCarrossel();
       }
     }, { passive: true });
