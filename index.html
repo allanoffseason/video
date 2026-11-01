@@ -42,12 +42,12 @@
     .section-kicker{display:block;color:var(--accent);font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.13em;margin-bottom:7px}
     h2{font-size:24px;line-height:1.15;letter-spacing:-.035em;margin:0}
     .count{font-size:12px;color:var(--muted);white-space:nowrap}
-    .carousel{display:flex;align-items:center;justify-content:center;gap:10px;max-width:440px;margin:0 auto}
-    .video-grid{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;overscroll-behavior-x:contain;width:min(100% - 4px,312px);min-width:0}
+    .carousel{display:flex;align-items:center;justify-content:center;position:relative;max-width:390px;margin:0 auto}
+    .video-grid{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;overscroll-behavior-x:contain;width:100%;min-width:0}
     .video-grid::-webkit-scrollbar{display:none}
     .video-card{flex:0 0 100%;scroll-snap-align:center}
-    .carousel-arrow{flex:0 0 35px;width:35px;height:46px;display:grid;place-items:center;border:1px solid var(--line);border-radius:12px;background:var(--surface-2);color:var(--accent-2);font-size:25px;cursor:pointer}
-    .carousel-arrow:disabled{opacity:.28;cursor:default}
+    .carousel-arrow{position:absolute;top:44%;z-index:2;width:44px;height:64px;display:grid;place-items:center;border:0;border-radius:13px;background:#15151cbb;color:var(--accent-2);font-size:18px;line-height:1;cursor:pointer;transform:translateY(-50%);touch-action:manipulation}.carousel-arrow:first-child{left:-11px}.carousel-arrow:last-child{right:-11px}
+    .carousel-arrow:disabled{opacity:0;pointer-events:none}
     .carousel-status{text-align:center;font-size:12px;color:var(--muted);margin:12px 0 0}
     .video-card{min-width:0;border:1px solid var(--line);background:var(--surface);border-radius:var(--radius);overflow:hidden}
     .video-frame{aspect-ratio:9/16;background:#09090c;position:relative}
@@ -61,10 +61,10 @@
     .video-info strong{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;letter-spacing:-.01em}
     .video-info span{display:block;margin-top:3px;color:var(--muted);font-size:11px}
     .contact{margin-top:55px;padding:27px 21px;border:1px solid var(--line);border-radius:21px;background:linear-gradient(135deg,#20172e 0%,#16151d 68%)}
-    .contact h2{font-size:26px}
+    .contact h2{font-size:26px}.contact-links{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}.contact-links a{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:0 17px;border-radius:12px;border:1px solid #514564;background:#231b31;font-size:13px;font-weight:750}.contact-links a:hover{border-color:var(--accent);background:#332646}
     .contact p{color:var(--muted);font-size:14px;line-height:1.65;margin:12px 0 21px;max-width:480px}
     footer{padding:20px 0 30px;color:var(--muted);border-top:1px solid var(--line);font-size:11px;text-align:center}
-    @media (max-width:340px){.wrap{width:min(100% - 24px,1100px)}.navbar{min-height:62px}.brand{font-size:12px}.carousel{gap:6px}.carousel-arrow{flex-basis:29px;width:29px}.video-grid{gap:9px}.video-info{padding:10px 8px}.hero{padding-top:40px}}
+    @media (max-width:340px){.wrap{width:min(100% - 24px,1100px)}.navbar{min-height:62px}.brand{font-size:12px}.carousel-arrow:first-child{left:-8px}.carousel-arrow:last-child{right:-8px}.video-grid{gap:9px}.video-info{padding:10px 8px}.hero{padding-top:40px}}
     @media (min-width:640px){.portrait{width:152px;height:152px}.hero{padding:90px 0 65px}.intro{font-size:17px}.carousel{display:block;max-width:none}.carousel-arrow,.carousel-status{display:none}.video-grid{display:grid;width:100%;overflow:visible;scroll-snap-type:none;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}.video-card{flex:none}.video-info{padding:15px}.video-info strong{font-size:14px}.video-info span{font-size:12px}.section-head{margin-bottom:24px}h2{font-size:30px}.contact{padding:40px}}
     @media (min-width:960px){.video-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}.hero{padding:105px 0 75px}.work{padding-top:20px}.contact{margin-top:85px}}
     @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.btn{transition:none}}
@@ -107,7 +107,12 @@
       <span class="section-kicker">Vamos criar?</span>
       <h2 id="contato-titulo">Seu próximo vídeo começa aqui.</h2>
       <p>Quer transformar seu conteúdo em algo marcante? Entre em contato para conversar sobre seu projeto.</p>
-      <a class="btn btn-primary" id="contact-link" href="mailto:seuemail@exemplo.com?subject=Or%C3%A7amento%20de%20edi%C3%A7%C3%A3o%20de%20v%C3%ADdeo">Solicitar orçamento ↗</a>
+      <a class="btn btn-primary" id="contact-link" href="mailto:allanoffseason@gmail.com?subject=Or%C3%A7amento%20de%20edi%C3%A7%C3%A3o%20de%20v%C3%ADdeo">Solicitar orçamento ↗</a>
+      <div class="contact-links" aria-label="Canais de contato">
+        <a href="https://x.com/allanoffseason" target="_blank" rel="noopener noreferrer">X / Twitter ↗</a>
+        <a href="https://discord.com/users/1509962754621051033" target="_blank" rel="noopener noreferrer">Discord ↗</a>
+        <a href="https://mail.google.com/mail/u/0/?fs=1&amp;to=allanoffseason@gmail.com&amp;tf=cm" target="_blank" rel="noopener noreferrer">Gmail ↗</a>
+      </div>
     </section>
   </main>
 
@@ -115,10 +120,10 @@
 
   <script>
     const videos = [
-      { url: "https://www.youtube.com/shorts/5Y4iVJMfSKk", titulo: "Projeto 01" },
-      { url: "https://www.youtube.com/shorts/AucGwDmQTTQ", titulo: "Projeto 02" },
-      { url: "https://www.youtube.com/shorts/vOb9nF5y_KU", titulo: "Projeto 03" },
-      { url: "https://www.youtube.com/shorts/VLvi7NGKW_Y", titulo: "Projeto 04" }
+      { url: "https://www.youtube.com/shorts/5Y4iVJMfSKk", titulo: "Vídeo 01" },
+      { url: "https://www.youtube.com/shorts/AucGwDmQTTQ", titulo: "Vídeo 02" },
+      { url: "https://www.youtube.com/shorts/vOb9nF5y_KU", titulo: "Vídeo 03" },
+      { url: "https://www.youtube.com/shorts/VLvi7NGKW_Y", titulo: "Vídeo 04" }
     ];
 
     function extrairIdYoutube(url) {
@@ -134,13 +139,25 @@
       return null;
     }
 
+    async function buscarTituloYoutube(id) {
+      try {
+        const videoUrl = `https://www.youtube.com/watch?v=${id}`;
+        const resposta = await fetch(`https://noembed.com/embed?url=${encodeURIComponent(videoUrl)}`);
+        if (!resposta.ok) return null;
+        const dados = await resposta.json();
+        return typeof dados.title === "string" && dados.title.trim() ? dados.title.trim() : null;
+      } catch (erro) {
+        return null;
+      }
+    }
+
     const grid = document.getElementById("video-grid");
     let total = 0;
 
     videos.forEach((video, indice) => {
       const id = extrairIdYoutube(video.url);
       if (!id || !/^[A-Za-z0-9_-]{11}$/.test(id)) return;
-      const titulo = video.titulo || `Projeto ${String(indice + 1).padStart(2, "0")}`;
+      const titulo = video.titulo || `Vídeo ${String(indice + 1).padStart(2, "0")}`;
       const card = document.createElement("article");
       card.className = "video-card";
       const frame = document.createElement("div");
@@ -183,6 +200,14 @@
       link.rel = "noopener noreferrer";
       link.textContent = "Abrir no YouTube ↗";
       info.append(nome, tipo, link);
+      buscarTituloYoutube(id).then(tituloReal => {
+        if (!tituloReal) return;
+        nome.textContent = tituloReal;
+        poster.setAttribute("aria-label", `Reproduzir ${tituloReal}`);
+        thumb.alt = `Miniatura do vídeo ${tituloReal}`;
+        const iframe = frame.querySelector("iframe");
+        if (iframe) iframe.title = `Vídeo: ${tituloReal}`;
+      });
       card.append(frame, info);
       grid.append(card);
       total++;
