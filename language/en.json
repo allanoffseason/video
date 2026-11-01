@@ -1,0 +1,53 @@
+{
+  "site": {
+    "title": "Allan Vieira | Video Editor",
+    "description": "Allan Vieira’s video editing portfolio, focused on vertical videos, YouTube Shorts and engaging edits."
+  },
+  "navigation": {
+    "home": "Back to top",
+    "work": "My work ↓"
+  },
+  "language": {
+    "label": "Website language",
+    "english": "Switch to English",
+    "portuguese": "Switch to Brazilian Portuguese"
+  },
+  "hero": {
+    "kicker": "Video editing portfolio",
+    "portrait": "Portrait of Allan Vieira",
+    "greeting": "I'm",
+    "description": "I’m a video editor who turns footage into engaging content with precise cuts, rhythm and personality. Explore my vertical video edits.",
+    "view": "View portfolio ↓",
+    "contact": "Get in touch"
+  },
+  "portfolio": {
+    "kicker": "Portfolio",
+    "heading": "Selected work",
+    "carousel": "Video carousel",
+    "singular": "video",
+    "plural": "videos",
+    "fallback": "Video",
+    "none": "No videos available",
+    "of": "of",
+    "swipeStatus": "Swipe to browse",
+    "type": "Video editing · Vertical",
+    "youtube": "Watch on YouTube ↗",
+    "play": "Play",
+    "thumbnail": "Thumbnail for",
+    "frame": "Video:",
+    "helpAria": "Got it, close swipe tip",
+    "helpTitle": "Swipe left or right",
+    "helpSubtitle": "Tap to continue"
+  },
+  "contact": {
+    "kicker": "Let's create",
+    "heading": "Your next video starts here.",
+    "description": "Want to turn your content into something memorable? Get in touch to talk about your project.",
+    "quote": "Request a quote ↗",
+    "channels": "Contact channels",
+    "subject": "Video editing quote"
+  },
+  "footer": {
+    "rights": "Video editor. All rights reserved."
+  }
+}

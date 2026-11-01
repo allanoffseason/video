@@ -1,0 +1,53 @@
+{
+  "site": {
+    "title": "Allan Vieira | Editor de Vídeos",
+    "description": "Portfólio de Allan Vieira, editor de vídeos especializado em conteúdos verticais, Shorts e edição dinâmica."
+  },
+  "navigation": {
+    "home": "Voltar ao início",
+    "work": "Meus trabalhos ↓"
+  },
+  "language": {
+    "label": "Idioma do site",
+    "english": "Mudar para inglês",
+    "portuguese": "Mudar para português do Brasil"
+  },
+  "hero": {
+    "kicker": "Portfólio de edição de vídeo",
+    "portrait": "Retrato de Allan Vieira",
+    "greeting": "Eu sou",
+    "description": "Sou editor de vídeos e transformo gravações em conteúdos envolventes, com cortes precisos, ritmo e personalidade. Conheça meus trabalhos em formato vertical.",
+    "view": "Ver portfólio ↓",
+    "contact": "Entrar em contato"
+  },
+  "portfolio": {
+    "kicker": "Portfólio",
+    "heading": "Trabalhos selecionados",
+    "carousel": "Carrossel de vídeos",
+    "singular": "vídeo",
+    "plural": "vídeos",
+    "fallback": "Vídeo",
+    "none": "Nenhum vídeo disponível",
+    "of": "de",
+    "swipeStatus": "Deslize para navegar",
+    "type": "Edição de vídeo · Vertical",
+    "youtube": "Abrir no YouTube ↗",
+    "play": "Reproduzir",
+    "thumbnail": "Miniatura do vídeo",
+    "frame": "Vídeo:",
+    "helpAria": "Entendi, fechar dica de navegação",
+    "helpTitle": "Deslize para o lado",
+    "helpSubtitle": "Toque para continuar"
+  },
+  "contact": {
+    "kicker": "Vamos criar?",
+    "heading": "Seu próximo vídeo começa aqui.",
+    "description": "Quer transformar seu conteúdo em algo marcante? Entre em contato para conversar sobre seu projeto.",
+    "quote": "Solicitar orçamento ↗",
+    "channels": "Canais de contato",
+    "subject": "Orçamento de edição de vídeo"
+  },
+  "footer": {
+    "rights": "Editor de Vídeos. Todos os direitos reservados."
+  }
+}
