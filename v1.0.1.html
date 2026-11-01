@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b0b0f">
+  <meta name="description" content="Portfólio de Allan Vieira, editor de vídeos especializado em conteúdos verticais, Shorts e edição dinâmica.">
+  <title>Allan Vieira | Editor de Vídeos</title>
+  <style>
+    :root{color-scheme:dark;--bg:#0b0b0f;--surface:#15151c;--surface-2:#1b1b25;--line:#292933;--text:#f7f7fb;--muted:#9c9cae;--accent:#a78bfa;--accent-2:#dbcaff;--radius:18px}
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased}
+    a{color:inherit;text-decoration:none}
+    button{font:inherit}
+    button,a{-webkit-tap-highlight-color:transparent}
+    :focus-visible{outline:2px solid var(--accent);outline-offset:4px}
+    .wrap{width:min(100% - 36px,1100px);margin-inline:auto}
+    header{border-bottom:1px solid var(--line)}
+    .navbar{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:70px}
+    .brand{font-size:14px;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+    .brand span{color:var(--accent)}
+    .nav-link{font-size:13px;color:var(--muted);font-weight:600;white-space:nowrap}
+    .nav-link:hover{color:var(--text)}
+    main{padding-bottom:36px}
+    .hero{padding:56px 0 40px}
+    .eyebrow{display:inline-flex;align-items:center;gap:9px;padding:7px 11px;border:1px solid #3e3155;border-radius:999px;background:#1b1429;color:var(--accent-2);font-size:11px;font-weight:750;letter-spacing:.08em;text-transform:uppercase}
+    .eyebrow::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--accent)}
+    h1{margin:20px 0 14px;font-size:clamp(34px,9.5vw,68px);line-height:1.06;letter-spacing:-.055em;max-width:820px}
+    h1 em{font-style:normal;color:var(--accent)}
+    .intro{max-width:560px;margin:0;color:var(--muted);font-size:15px;line-height:1.75}
+    .actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:25px}
+    .btn{display:inline-flex;justify-content:center;align-items:center;min-height:46px;padding:0 18px;border-radius:12px;border:1px solid transparent;font-weight:750;font-size:13px;transition:background .2s,border-color .2s,transform .2s}
+    .btn:active{transform:scale(.98)}
+    .btn-primary{background:var(--accent);color:#160e24}
+    .btn-primary:hover{background:#c0aaff}
+    .btn-outline{border-color:var(--line);background:var(--surface);color:var(--text)}
+    .btn-outline:hover{border-color:#5a506c}
+    .work{padding-top:12px;scroll-margin-top:24px}
+    .section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:20px}
+    .section-kicker{display:block;color:var(--accent);font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.13em;margin-bottom:7px}
+    h2{font-size:24px;line-height:1.15;letter-spacing:-.035em;margin:0}
+    .count{font-size:12px;color:var(--muted);white-space:nowrap}
+    .video-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+    .video-card{min-width:0;border:1px solid var(--line);background:var(--surface);border-radius:var(--radius);overflow:hidden}
+    .video-frame{aspect-ratio:9/16;background:#09090c;position:relative}
+    .video-frame iframe{display:block;width:100%;height:100%;border:0}
+    .video-poster{width:100%;height:100%;border:0;padding:0;display:flex;align-items:center;justify-content:center;position:relative;cursor:pointer;background:#17131f;color:#fff;overflow:hidden}
+    .video-poster img{width:100%;height:100%;object-fit:cover;display:block;opacity:.85}
+    .play-icon{position:absolute;display:grid;place-items:center;width:52px;height:52px;border-radius:50%;background:#a78bfa;color:#160e24;font-size:22px;box-shadow:0 6px 24px #0009;transition:transform .2s}
+    .video-poster:hover .play-icon{transform:scale(1.08)}
+    .external-video{display:inline-block;margin-top:7px;font-size:11px;font-weight:700;color:var(--accent-2);text-decoration:underline;text-underline-offset:3px}
+    .video-info{padding:12px 11px 13px}
+    .video-info strong{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;letter-spacing:-.01em}
+    .video-info span{display:block;margin-top:3px;color:var(--muted);font-size:11px}
+    .contact{margin-top:55px;padding:27px 21px;border:1px solid var(--line);border-radius:21px;background:linear-gradient(135deg,#20172e 0%,#16151d 68%)}
+    .contact h2{font-size:26px}
+    .contact p{color:var(--muted);font-size:14px;line-height:1.65;margin:12px 0 21px;max-width:480px}
+    footer{padding:20px 0 30px;color:var(--muted);border-top:1px solid var(--line);font-size:11px;text-align:center}
+    @media (max-width:340px){.wrap{width:min(100% - 24px,1100px)}.navbar{min-height:62px}.brand{font-size:12px}.video-grid{gap:9px}.video-info{padding:10px 8px}.hero{padding-top:40px}}
+    @media (min-width:640px){.hero{padding:90px 0 65px}.intro{font-size:17px}.video-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}.video-info{padding:15px}.video-info strong{font-size:14px}.video-info span{font-size:12px}.section-head{margin-bottom:24px}h2{font-size:30px}.contact{padding:40px}}
+    @media (min-width:960px){.video-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}.hero{padding:105px 0 75px}.work{padding-top:20px}.contact{margin-top:85px}}
+    @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.btn{transition:none}}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap navbar">
+      <a class="brand" href="#inicio" aria-label="Voltar ao início">ALLAN <span>VIEIRA.</span></a>
+      <a class="nav-link" href="#trabalhos">Meus trabalhos ↓</a>
+    </div>
+  </header>
+
+  <main class="wrap" id="inicio">
+    <section class="hero" aria-labelledby="titulo-principal">
+      <span class="eyebrow">Portfólio de edição de vídeo</span>
+      <h1>Eu sou <em>Allan Vieira.</em><br>Editor de vídeos.</h1>
+      <p class="intro">Sou editor de vídeos e transformo gravações em conteúdos envolventes, com cortes precisos, ritmo e personalidade. Conheça meus trabalhos em formato vertical.</p>
+      <div class="actions">
+        <a class="btn btn-primary" href="#trabalhos">Ver portfólio ↓</a>
+        <a class="btn btn-outline" href="#contato">Entrar em contato</a>
+      </div>
+    </section>
+
+    <section class="work" id="trabalhos" aria-labelledby="trabalhos-titulo">
+      <div class="section-head">
+        <div><span class="section-kicker">Portfólio</span><h2 id="trabalhos-titulo">Trabalhos selecionados</h2></div>
+        <span class="count" id="video-count" aria-live="polite"></span>
+      </div>
+      <div class="video-grid" id="video-grid"></div>
+    </section>
+
+    <section class="contact" id="contato" aria-labelledby="contato-titulo">
+      <span class="section-kicker">Vamos criar?</span>
+      <h2 id="contato-titulo">Seu próximo vídeo começa aqui.</h2>
+      <p>Quer transformar seu conteúdo em algo marcante? Entre em contato para conversar sobre seu projeto.</p>
+      <a class="btn btn-primary" id="contact-link" href="mailto:seuemail@exemplo.com?subject=Or%C3%A7amento%20de%20edi%C3%A7%C3%A3o%20de%20v%C3%ADdeo">Solicitar orçamento ↗</a>
+    </section>
+  </main>
+
+  <footer><div class="wrap"><span id="year"></span> © Allan Vieira · Editor de Vídeos. Todos os direitos reservados.</div></footer>
+
+  <script>
+    const videos = [
+      { url: "https://www.youtube.com/shorts/5Y4iVJMfSKk", titulo: "Projeto 01" },
+      { url: "https://www.youtube.com/shorts/AucGwDmQTTQ", titulo: "Projeto 02" },
+      { url: "https://www.youtube.com/shorts/vOb9nF5y_KU", titulo: "Projeto 03" },
+      { url: "https://www.youtube.com/shorts/VLvi7NGKW_Y", titulo: "Projeto 04" }
+    ];
+
+    function extrairIdYoutube(url) {
+      try {
+        const parsed = new URL(url);
+        const host = parsed.hostname.replace(/^www\./, "");
+        if (host === "youtu.be") return parsed.pathname.split("/")[1] || null;
+        if (host === "youtube.com" || host === "m.youtube.com") {
+          if (parsed.pathname === "/watch") return parsed.searchParams.get("v");
+          if (/^\/(shorts|embed)\//.test(parsed.pathname)) return parsed.pathname.split("/")[2] || null;
+        }
+      } catch (erro) { return null; }
+      return null;
+    }
+
+    const grid = document.getElementById("video-grid");
+    let total = 0;
+
+    videos.forEach((video, indice) => {
+      const id = extrairIdYoutube(video.url);
+      if (!id || !/^[A-Za-z0-9_-]{11}$/.test(id)) return;
+      const titulo = video.titulo || `Projeto ${String(indice + 1).padStart(2, "0")}`;
+      const card = document.createElement("article");
+      card.className = "video-card";
+      const frame = document.createElement("div");
+      frame.className = "video-frame";
+      const url = `https://www.youtube.com/shorts/${id}`;
+      const poster = document.createElement("button");
+      poster.type = "button";
+      poster.className = "video-poster";
+      poster.setAttribute("aria-label", `Reproduzir ${titulo}`);
+      const thumb = document.createElement("img");
+      thumb.src = `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
+      thumb.alt = `Miniatura do vídeo ${titulo}`;
+      thumb.loading = "lazy";
+      const play = document.createElement("span");
+      play.className = "play-icon";
+      play.setAttribute("aria-hidden", "true");
+      play.textContent = "▶";
+      poster.append(thumb, play);
+      poster.addEventListener("click", () => {
+        const iframe = document.createElement("iframe");
+        iframe.src = `https://www.youtube.com/embed/${id}?playsinline=1&rel=0&autoplay=1`;
+        iframe.title = `Vídeo: ${titulo}`;
+        iframe.referrerPolicy = "strict-origin-when-cross-origin";
+        iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+        iframe.allowFullscreen = true;
+        frame.replaceChildren(iframe);
+      });
+      frame.append(poster);
+
+      const info = document.createElement("div");
+      info.className = "video-info";
+      const nome = document.createElement("strong");
+      nome.textContent = titulo;
+      const tipo = document.createElement("span");
+      tipo.textContent = "Edição de vídeo · Vertical";
+      const link = document.createElement("a");
+      link.className = "external-video";
+      link.href = url;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.textContent = "Abrir no YouTube ↗";
+      info.append(nome, tipo, link);
+      card.append(frame, info);
+      grid.append(card);
+      total++;
+    });
+
+    document.getElementById("video-count").textContent = `${total} ${total === 1 ? "vídeo" : "vídeos"}`;
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
