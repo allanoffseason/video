@@ -202,6 +202,18 @@
     const grid = document.getElementById("video-grid");
     let total = 0;
     let mostrouDica = false;
+    let dicaAtiva = null;
+    let temporizadorDica = null;
+    function fecharDica() {
+      if (temporizadorDica !== null) {
+        clearTimeout(temporizadorDica);
+        temporizadorDica = null;
+      }
+      if (dicaAtiva) {
+        dicaAtiva.remove();
+        dicaAtiva = null;
+      }
+    }
     const mobileQuery = window.matchMedia("(max-width:639px)");
     const swipeIcon = `<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M19 24V9a3 3 0 0 1 6 0v14-5a3 3 0 0 1 6 0v5-2a3 3 0 0 1 6 0v9c0 8-5 12-12 12-6 0-9-4-12-9l-5-7a3 3 0 0 1 5-3l6 7"/></svg>`;
     function pausarVideosForaDoAtual() {
@@ -291,8 +303,23 @@
             dica.className = "swipe-help";
             dica.setAttribute("aria-label", "Entendi, fechar dica de navegação");
             dica.innerHTML = `<span class="swipe-finger">${swipeIcon}</span><strong>Deslize para o lado</strong><small>Toque para continuar</small>`;
-            dica.addEventListener("click", () => dica.remove(), { once: true });
+            dica.addEventListener("click", fecharDica);
+            let toqueInicialX = null;
+            dica.addEventListener("touchstart", ev => {
+              toqueInicialX = ev.touches[0].clientX;
+            }, { passive: true });
+            dica.addEventListener("touchend", ev => {
+              if (toqueInicialX === null) return;
+              const deslocamento = ev.changedTouches[0].clientX - toqueInicialX;
+              toqueInicialX = null;
+              if (Math.abs(deslocamento) > 35) {
+                fecharDica();
+                irParaVideo(slideAtual + (deslocamento < 0 ? 1 : -1));
+              }
+            }, { passive: true });
+            dicaAtiva = dica;
             frame.append(dica);
+            temporizadorDica = setTimeout(fecharDica, 3500);
           }
         }
       });
@@ -342,6 +369,7 @@
       if (!cards.length) return;
       const proximo = Math.max(0, Math.min(indice, cards.length - 1));
       if (slideAtual !== proximo) {
+        fecharDica();
         slideAtual = proximo;
         ultimoIndice = proximo;
         pausarVideosForaDoAtual();
@@ -358,6 +386,7 @@
       const indice = cards.reduce((best, card, i) =>
         Math.abs(card.offsetLeft - cards[0].offsetLeft - grid.scrollLeft) < Math.abs(cards[best].offsetLeft - cards[0].offsetLeft - grid.scrollLeft) ? i : best, 0);
       if (indice !== ultimoIndice) {
+        fecharDica();
         ultimoIndice = indice;
         slideAtual = indice;
         pausarVideosForaDoAtual();
@@ -368,5 +397,7 @@
     atualizarCarrossel();
     document.getElementById("year").textContent = new Date().getFullYear();
   </script>
+  <!-- Versão: v1.0.7 -->
+  <!-- Commit: Dica de deslize fecha automaticamente após 3,5 segundos, ao tocar ou ao trocar de vídeo. -->
 </body>
 </html>
