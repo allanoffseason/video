@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#0b0b0f">
-  <meta name="description" content="Portfólio de Allan Vieira, editor de vídeos especializado em conteúdos verticais, Shorts e edição dinâmica.">
-  <title>Allan Vieira | Editor de Vídeos</title>
+  <meta name="description" content="Allan Vieira’s video editing portfolio, focused on vertical videos, YouTube Shorts and engaging edits.">
+  <title>Allan Vieira | Video Editor</title>
   <style>
     :root{color-scheme:dark;--bg:#0b0b0f;--surface:#15151c;--surface-2:#1b1b25;--line:#292933;--text:#f7f7fb;--muted:#9c9cae;--accent:#a78bfa;--accent-2:#dbcaff;--radius:18px}
     *{box-sizing:border-box}
@@ -22,6 +22,12 @@
     .brand span{color:var(--accent)}
     .nav-link{font-size:13px;color:var(--muted);font-weight:600;white-space:nowrap}
     .nav-link:hover{color:var(--text)}
+    .header-controls{display:flex;align-items:center;gap:18px}
+    .language-switch{display:inline-flex;gap:2px;padding:3px;border:1px solid var(--line);border-radius:10px;background:var(--surface);flex:none}
+    .lang-button{border:0;background:transparent;color:var(--muted);padding:7px 9px;min-width:41px;border-radius:7px;font-size:11px;font-weight:750;cursor:pointer;white-space:nowrap;line-height:1.3;transition:background .18s,color .18s}
+    .lang-button[aria-pressed="true"]{background:#403151;color:var(--text)}
+    .lang-button:hover:not([aria-pressed="true"]){background:var(--surface-2);color:var(--text)}
+    @media (max-width:639px){.header-controls .nav-link{display:none}}
     main{padding-bottom:36px}
     .hero{padding:56px 0 40px}
     .eyebrow{display:inline-flex;align-items:center;gap:9px;padding:7px 11px;border:1px solid #3e3155;border-radius:999px;background:#1b1429;color:var(--accent-2);font-size:11px;font-weight:750;letter-spacing:.08em;text-transform:uppercase}
@@ -86,40 +92,46 @@
 <body>
   <header>
     <div class="wrap navbar">
-      <a class="brand" href="#inicio" aria-label="Voltar ao início">ALLAN <span>VIEIRA.</span></a>
-      <a class="nav-link" href="#trabalhos">Meus trabalhos ↓</a>
+      <a class="brand" href="#inicio" aria-label="Back to top" data-i18n-aria="navigation.home">ALLAN <span>VIEIRA.</span></a>
+      <div class="header-controls">
+        <a class="nav-link" href="#trabalhos" data-i18n="navigation.work">My work ↓</a>
+        <div class="language-switch" role="group" aria-label="Website language" data-i18n-aria="language.label">
+          <button type="button" class="lang-button" data-lang="en" aria-pressed="true" aria-label="Switch to English">EN</button>
+          <button type="button" class="lang-button" data-lang="pt-br" aria-pressed="false" aria-label="Switch to Brazilian Portuguese">PT-BR</button>
+        </div>
+      </div>
     </div>
   </header>
 
   <main class="wrap" id="inicio">
     <section class="hero" aria-labelledby="titulo-principal">
-      <span class="eyebrow">Portfólio de edição de vídeo</span>
-      <img class="portrait" src="assets/portrait.png" alt="Retrato de Allan Vieira" width="132" height="132">
-      <h1>Eu sou <em>Allan Vieira.</em></h1>
-      <p class="intro">Sou editor de vídeos e transformo gravações em conteúdos envolventes, com cortes precisos, ritmo e personalidade. Conheça meus trabalhos em formato vertical.</p>
+      <span class="eyebrow" data-i18n="hero.kicker">Video editing portfolio</span>
+      <img class="portrait" src="assets/portrait.png" alt="Portrait of Allan Vieira" data-i18n-alt="hero.portrait" width="132" height="132">
+      <h1><span data-i18n="hero.greeting">I’m</span> <em>Allan Vieira.</em></h1>
+      <p class="intro" data-i18n="hero.description">I’m a video editor who turns footage into engaging content with precise cuts, rhythm and personality. Explore my vertical video edits.</p>
       <div class="actions">
-        <a class="btn btn-primary" href="#trabalhos">Ver portfólio ↓</a>
-        <a class="btn btn-outline" href="#contato">Entrar em contato</a>
+        <a class="btn btn-primary" href="#trabalhos" data-i18n="hero.view">View portfolio ↓</a>
+        <a class="btn btn-outline" href="#contato" data-i18n="hero.contact">Get in touch</a>
       </div>
     </section>
 
     <section class="work" id="trabalhos" aria-labelledby="trabalhos-titulo">
       <div class="section-head">
-        <div><span class="section-kicker">Portfólio</span><h2 id="trabalhos-titulo">Trabalhos selecionados</h2></div>
+        <div><span class="section-kicker" data-i18n="portfolio.kicker">Portfolio</span><h2 id="trabalhos-titulo" data-i18n="portfolio.heading">Selected work</h2></div>
         <span class="count" id="video-count" aria-live="polite"></span>
       </div>
-      <div class="carousel" aria-label="Carrossel de vídeos">
+      <div class="carousel" aria-label="Video carousel" data-i18n-aria="portfolio.carousel">
         <div class="video-grid" id="video-grid"></div>
       </div>
       <p class="carousel-status" id="carousel-status" aria-live="polite"></p>
     </section>
 
     <section class="contact" id="contato" aria-labelledby="contato-titulo">
-      <span class="section-kicker">Vamos criar?</span>
-      <h2 id="contato-titulo">Seu próximo vídeo começa aqui.</h2>
-      <p>Quer transformar seu conteúdo em algo marcante? Entre em contato para conversar sobre seu projeto.</p>
-      <a class="btn btn-primary" id="contact-link" href="mailto:allanoffseason@gmail.com?subject=Or%C3%A7amento%20de%20edi%C3%A7%C3%A3o%20de%20v%C3%ADdeo">Solicitar orçamento ↗</a>
-      <div class="contact-links" aria-label="Canais de contato">
+      <span class="section-kicker" data-i18n="contact.kicker">Let’s create</span>
+      <h2 id="contato-titulo" data-i18n="contact.heading">Your next video starts here.</h2>
+      <p data-i18n="contact.description">Want to turn your content into something memorable? Get in touch to talk about your project.</p>
+      <a class="btn btn-primary" id="contact-link" href="mailto:allanoffseason@gmail.com?subject=Video%20editing%20quote" data-i18n="contact.quote">Request a quote ↗</a>
+      <div class="contact-links" aria-label="Contact channels" data-i18n-aria="contact.channels">
         <a href="https://x.com/allanoffseason" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.901 2H22l-6.767 7.736L23.193 22h-6.231l-4.88-7.427L5.586 22H2.484l7.238-8.27L1.807 2h6.389l4.412 6.738L18.901 2Zm-1.093 18h1.717L7.259 3.895H5.416L17.808 20Z"/></svg>X / Twitter ↗</a>
         <a href="https://discord.com/users/1509962754621051033" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.317 4.369a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.078.037c-.211.375-.445.864-.608 1.249a18.27 18.27 0 0 0-5.492 0 12.64 12.64 0 0 0-.617-1.249.077.077 0 0 0-.078-.037 19.74 19.74 0 0 0-4.885 1.515.07.07 0 0 0-.032.027C.533 9.046-.32 13.581.099 18.057a.082.082 0 0 0 .031.056 19.9 19.9 0 0 0 5.993 3.03.076.076 0 0 0 .083-.028 14.2 14.2 0 0 0 1.226-1.993.075.075 0 0 0-.041-.104 13.1 13.1 0 0 1-1.872-.894.076.076 0 0 1-.008-.126l.372-.288a.074.074 0 0 1 .077-.01c3.927 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.009l.373.289a.075.075 0 0 1-.007.126 12.3 12.3 0 0 1-1.873.893.075.075 0 0 0-.04.105 16 16 0 0 0 1.226 1.992.075.075 0 0 0 .083.029 19.84 19.84 0 0 0 6.002-3.03.077.077 0 0 0 .032-.056c.5-5.177-.838-9.675-3.549-13.66a.06.06 0 0 0-.031-.028ZM8.02 15.331c-1.183 0-2.156-1.086-2.156-2.42 0-1.333.955-2.42 2.156-2.42 1.21 0 2.175 1.096 2.156 2.42 0 1.334-.955 2.42-2.156 2.42Zm7.96 0c-1.183 0-2.156-1.086-2.156-2.42 0-1.333.955-2.42 2.156-2.42 1.21 0 2.175 1.096 2.156 2.42 0 1.334-.955 2.42-2.156 2.42Z"/></svg>Discord ↗</a>
         <a href="https://mail.google.com/mail/u/0/?fs=1&amp;to=allanoffseason@gmail.com&amp;tf=cm" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 6.9c0-.96.75-1.65 1.67-1.65.35 0 .68.11.98.34L12 11.2l7.35-5.61c.3-.23.63-.34.98-.34.92 0 1.67.69 1.67 1.65v10.2c0 .92-.75 1.65-1.67 1.65h-2.07V9.76L12 14.5 5.74 9.76v8.99H3.67C2.75 18.75 2 18.02 2 17.1V6.9Z"/></svg>Gmail ↗</a>
@@ -127,14 +139,107 @@
     </section>
   </main>
 
-  <footer><div class="wrap"><span id="year"></span> © Allan Vieira · Editor de Vídeos. Todos os direitos reservados.</div></footer>
+  <footer><div class="wrap"><span id="year"></span> © Allan Vieira · <span data-i18n="footer.rights">Video editor. All rights reserved.</span></div></footer>
 
   <script>
+    const translationsCache = new Map();
+    const languageFiles = { en: "language/en.json", "pt-br": "language/pt-br.json" };
+    const languagePreferenceKey = "allan-portfolio-language";
+    let currentLanguage = "en";
+    let dictionary = null;
+    let languageChangeSerial = 0;
+    let refreshVideoLabels = () => {};
+
+    function translate(key, fallback = "") {
+      const value = key.split(".").reduce((node, segment) => node?.[segment], dictionary);
+      return typeof value === "string" ? value : fallback;
+    }
+
+    function detectBrowserLanguage() {
+      const primary = navigator.languages?.[0] || navigator.language || "en";
+      return /^pt(?:-|$)/i.test(primary) ? "pt-br" : "en";
+    }
+
+    function preferredLanguage() {
+      try {
+        const stored = localStorage.getItem(languagePreferenceKey);
+        if (stored && Object.hasOwn(languageFiles, stored)) return stored;
+      } catch (error) {}
+      return detectBrowserLanguage();
+    }
+
+    async function fetchLanguage(lang) {
+      if (!translationsCache.has(lang)) {
+        const request = fetch(new URL(languageFiles[lang], document.baseURI)).then(async response => {
+          if (!response.ok) throw new Error(`Language ${lang}: HTTP ${response.status}`);
+          return response.json();
+        }).catch(error => {
+          translationsCache.delete(lang);
+          throw error;
+        });
+        translationsCache.set(lang, request);
+      }
+      return translationsCache.get(lang);
+    }
+
+    function updateStaticTranslations() {
+      document.documentElement.lang = currentLanguage === "pt-br" ? "pt-BR" : "en";
+      document.title = translate("site.title", "Allan Vieira | Video Editor");
+      document.querySelector('meta[name="description"]').content = translate("site.description", "Allan Vieira’s video editing portfolio.");
+      document.querySelectorAll("[data-i18n]").forEach(element => {
+        element.textContent = translate(element.dataset.i18n, element.textContent);
+      });
+      document.querySelectorAll("[data-i18n-aria]").forEach(element => {
+        element.setAttribute("aria-label", translate(element.dataset.i18nAria, element.getAttribute("aria-label")));
+      });
+      document.querySelectorAll("[data-i18n-alt]").forEach(element => {
+        element.alt = translate(element.dataset.i18nAlt, element.alt);
+      });
+      document.querySelectorAll(".lang-button").forEach(button => {
+        const selected = button.dataset.lang === currentLanguage;
+        button.setAttribute("aria-pressed", String(selected));
+        button.setAttribute("aria-label", translate(button.dataset.lang === "en" ? "language.english" : "language.portuguese", button.getAttribute("aria-label")));
+      });
+      document.getElementById("contact-link").href = `mailto:allanoffseason@gmail.com?subject=${encodeURIComponent(translate("contact.subject", "Video editing quote"))}`;
+      refreshVideoLabels();
+    }
+
+    async function changeLanguage(lang, remember = false) {
+      if (!Object.hasOwn(languageFiles, lang)) return;
+      const sequence = ++languageChangeSerial;
+      let resultLanguage = lang;
+      let nextDictionary;
+      try {
+        nextDictionary = await fetchLanguage(lang);
+      } catch (error) {
+        console.warn("Language file unavailable:", error);
+        if (lang === "en") return;
+        try {
+          resultLanguage = "en";
+          nextDictionary = await fetchLanguage("en");
+        } catch (fallbackError) {
+          console.warn("English language file unavailable:", fallbackError);
+          return;
+        }
+      }
+      if (sequence !== languageChangeSerial) return;
+      currentLanguage = resultLanguage;
+      dictionary = nextDictionary;
+      updateStaticTranslations();
+      if (remember && resultLanguage === lang) {
+        try { localStorage.setItem(languagePreferenceKey, lang); } catch (error) {}
+      }
+    }
+
+    document.querySelectorAll(".lang-button").forEach(button => {
+      button.addEventListener("click", () => changeLanguage(button.dataset.lang, true));
+    });
+
     const videos = [
-      { url: "https://www.youtube.com/shorts/5Y4iVJMfSKk", titulo: "Vídeo 01" },
-      { url: "https://www.youtube.com/shorts/AucGwDmQTTQ", titulo: "Vídeo 02" },
-      { url: "https://www.youtube.com/shorts/vOb9nF5y_KU", titulo: "Vídeo 03" },
-      { url: "https://www.youtube.com/shorts/VLvi7NGKW_Y", titulo: "Vídeo 04" }
+      { url: "https://www.youtube.com/shorts/5Y4iVJMfSKk" },
+      { url: "https://www.youtube.com/shorts/AucGwDmQTTQ" },
+      { url: "https://www.youtube.com/shorts/vOb9nF5y_KU" },
+      { url: "https://www.youtube.com/shorts/VLvi7NGKW_Y" }
     ];
 
     function extrairIdYoutube(url) {
@@ -163,8 +268,9 @@
     }
 
     function formatarTitulo(titulo) {
-      const texto = titulo.trim().toLocaleLowerCase("pt-BR");
-      return texto ? texto.charAt(0).toLocaleUpperCase("pt-BR") + texto.slice(1) : texto;
+      const locale = currentLanguage === "pt-br" ? "pt-BR" : "en";
+      const texto = titulo.trim().toLocaleLowerCase(locale);
+      return texto ? texto.charAt(0).toLocaleUpperCase(locale) + texto.slice(1) : texto;
     }
 
     const players = new Map();
@@ -225,16 +331,18 @@
     videos.forEach((video, indice) => {
       const id = extrairIdYoutube(video.url);
       if (!id || !/^[A-Za-z0-9_-]{11}$/.test(id)) return;
-      const titulo = formatarTitulo(video.titulo || `Vídeo ${String(indice + 1).padStart(2, "0")}`);
+      const numero = String(indice + 1).padStart(2, "0");
       const card = document.createElement("article");
       card.className = "video-card";
+      card.dataset.videoNumber = numero;
+      card.dataset.videoTitle = video.titulo || "";
       const frame = document.createElement("div");
       frame.className = "video-frame";
       const url = `https://www.youtube.com/shorts/${id}`;
       const poster = document.createElement("button");
       poster.type = "button";
       poster.className = "video-poster";
-      poster.setAttribute("aria-label", `Reproduzir ${titulo}`);
+      poster.setAttribute("aria-label", "Play video");
       const thumb = document.createElement("img");
       const resolucoes = ["maxresdefault", "sddefault", "hqdefault"];
       let indiceResolucao = 0;
@@ -251,7 +359,7 @@
         if (thumb.naturalWidth < larguraMinima) tentarProximaMiniatura();
       });
       thumb.src = `https://i.ytimg.com/vi/${id}/${resolucoes[0]}.jpg`;
-      thumb.alt = `Miniatura do vídeo ${titulo}`;
+      thumb.alt = "Video thumbnail";
       thumb.loading = "lazy";
       const play = document.createElement("span");
       play.className = "play-icon";
@@ -263,7 +371,7 @@
         const iframe = document.createElement("iframe");
         const origem = location.protocol === "https:" || location.protocol === "http:" ? `&origin=${encodeURIComponent(location.origin)}` : "";
         iframe.src = `https://www.youtube.com/embed/${id}?playsinline=1&rel=0&autoplay=1&enablejsapi=1${origem}`;
-        iframe.title = `Vídeo: ${nome.textContent}`;
+        iframe.title = `${translate("portfolio.frame", "Video:")} ${nome.textContent}`;
         iframe.referrerPolicy = "strict-origin-when-cross-origin";
         iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
         iframe.allowFullscreen = true;
@@ -301,8 +409,10 @@
             const dica = document.createElement("button");
             dica.type = "button";
             dica.className = "swipe-help";
-            dica.setAttribute("aria-label", "Entendi, fechar dica de navegação");
-            dica.innerHTML = `<span class="swipe-finger">${swipeIcon}</span><strong>Deslize para o lado</strong><small>Toque para continuar</small>`;
+            dica.setAttribute("aria-label", translate("portfolio.helpAria", "Close swipe tip"));
+            dica.innerHTML = `<span class="swipe-finger">${swipeIcon}</span><strong></strong><small></small>`;
+            dica.querySelector("strong").textContent = translate("portfolio.helpTitle", "Swipe left or right");
+            dica.querySelector("small").textContent = translate("portfolio.helpSubtitle", "Tap to continue");
             dica.addEventListener("click", fecharDica);
             let toqueInicialX = null;
             dica.addEventListener("touchstart", ev => {
@@ -328,41 +438,55 @@
       const info = document.createElement("div");
       info.className = "video-info";
       const nome = document.createElement("strong");
-      nome.textContent = titulo;
+      nome.textContent = "";
       const tipo = document.createElement("span");
-      tipo.textContent = "Edição de vídeo · Vertical";
+      tipo.textContent = "";
       const link = document.createElement("a");
       link.className = "external-video";
       link.href = url;
       link.target = "_blank";
       link.rel = "noopener noreferrer";
-      link.textContent = "Abrir no YouTube ↗";
+      link.textContent = "";
       info.append(nome, tipo, link);
       buscarTituloYoutube(id).then(tituloReal => {
         if (!tituloReal) return;
-        const tituloFormatado = formatarTitulo(tituloReal);
-        nome.textContent = tituloFormatado;
-        poster.setAttribute("aria-label", `Reproduzir ${tituloFormatado}`);
-        thumb.alt = `Miniatura do vídeo ${tituloFormatado}`;
-        const iframe = frame.querySelector("iframe");
-        if (iframe) iframe.title = `Vídeo: ${tituloFormatado}`;
+        card.dataset.videoTitle = tituloReal;
+        renderVideoCard(card);
       });
       card.append(frame, info);
       grid.append(card);
+      renderVideoCard(card);
       total++;
     });
 
-    document.getElementById("video-count").textContent = `${total} ${total === 1 ? "vídeo" : "vídeos"}`;
+    function renderVideoCard(card) {
+      const name = card.querySelector(".video-info strong");
+      const rawTitle = card.dataset.videoTitle;
+      const title = rawTitle ? formatarTitulo(rawTitle) : `${translate("portfolio.fallback", "Video")} ${card.dataset.videoNumber}`;
+      name.textContent = title;
+      card.querySelector(".video-info span").textContent = translate("portfolio.type", "Video editing · Vertical");
+      card.querySelector(".external-video").textContent = translate("portfolio.youtube", "Watch on YouTube ↗");
+      card.querySelector(".video-poster").setAttribute("aria-label", `${translate("portfolio.play", "Play")} ${title}`);
+      card.querySelector(".video-poster img").alt = `${translate("portfolio.thumbnail", "Thumbnail for")} ${title}`;
+      const iframe = card.querySelector("iframe");
+      if (iframe) iframe.title = `${translate("portfolio.frame", "Video:")} ${title}`;
+    }
+
+    function updateVideoCount() {
+      const label = total === 1 ? translate("portfolio.singular", "video") : translate("portfolio.plural", "videos");
+      document.getElementById("video-count").textContent = `${total} ${label}`;
+    }
+    updateVideoCount();
     const status = document.getElementById("carousel-status");
     let slideAtual = 0;
     function atualizarCarrossel() {
       const cards = [...grid.children];
       if (!cards.length) {
-        status.textContent = "Nenhum vídeo disponível";
+        status.textContent = translate("portfolio.none", "No videos available");
         return;
       }
       slideAtual = Math.max(0, Math.min(slideAtual, cards.length - 1));
-      status.textContent = `${slideAtual + 1} de ${cards.length} · Deslize para navegar`;
+      status.textContent = `${slideAtual + 1} ${translate("portfolio.of", "of")} ${cards.length} · ${translate("portfolio.swipeStatus", "Swipe to browse")}`;
     }
     function irParaVideo(indice) {
       const cards = [...grid.children];
@@ -394,10 +518,20 @@
         atualizarCarrossel();
       }
     }, { passive: true });
+    refreshVideoLabels = () => {
+      [...grid.children].forEach(renderVideoCard);
+      updateVideoCount();
+      atualizarCarrossel();
+      if (dicaAtiva) {
+        dicaAtiva.setAttribute("aria-label", translate("portfolio.helpAria", "Close swipe tip"));
+        dicaAtiva.querySelector("strong").textContent = translate("portfolio.helpTitle", "Swipe left or right");
+        dicaAtiva.querySelector("small").textContent = translate("portfolio.helpSubtitle", "Tap to continue");
+      }
+    };
     atualizarCarrossel();
     document.getElementById("year").textContent = new Date().getFullYear();
+    changeLanguage(preferredLanguage());
   </script>
-  <!-- Versão: v1.0.7 -->
-  <!-- Commit: Dica de deslize fecha automaticamente após 3,5 segundos, ao tocar ou ao trocar de vídeo. -->
+  <!-- Commit: v1.0.8;Adicionada detecção automática de idioma, seletor EN/PT-BR e traduções completas em arquivos JSON externos. -->
 </body>
 </html>
